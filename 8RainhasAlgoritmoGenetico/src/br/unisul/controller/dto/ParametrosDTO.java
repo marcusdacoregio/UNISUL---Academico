@@ -7,14 +7,16 @@ public class ParametrosDTO {
 	private int taxaMutacao;
 	private int taxaRecombinacao;
 	private int numeroGeracoes;
+	private int tamanhoPopulacaoInicial;
 	
 	public ParametrosDTO(boolean pontoCorteAleatorio, int pontoCorte,
-			int taxaMutacao, int taxaRecombinacao, int numeroGeracoes) {
+			int taxaMutacao, int taxaRecombinacao, int numeroGeracoes, int tamanhoPopulacaoInicial) {
 		this.pontoCorteAleatorio = pontoCorteAleatorio;
 		this.pontoCorte = pontoCorte;
 		this.taxaMutacao = taxaMutacao;
 		this.taxaRecombinacao = taxaRecombinacao;
 		this.numeroGeracoes = numeroGeracoes;
+		this.tamanhoPopulacaoInicial = tamanhoPopulacaoInicial;
 	}
 	
 	public boolean isPontoCorteAleatorio() {
@@ -31,6 +33,10 @@ public class ParametrosDTO {
 	}
 	public int getNumeroGeracoes() {
 		return numeroGeracoes;
+	}
+
+	public int getTamanhoPopulacaoInicial() {
+		return tamanhoPopulacaoInicial;
 	}
 
 }
