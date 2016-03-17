@@ -1,4 +1,4 @@
-package br.unisul.model.dto;
+package br.unisul.controller.dto;
 
 public class ParametrosDTO {
 	

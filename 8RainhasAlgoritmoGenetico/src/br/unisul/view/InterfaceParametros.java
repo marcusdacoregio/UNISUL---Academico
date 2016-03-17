@@ -1,5 +1,7 @@
 package br.unisul.view;
 
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -10,10 +12,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
+
+import br.unisul.model.Model;
+import br.unisul.model.domain.Individuo;
 
 public class InterfaceParametros {
 
@@ -192,6 +197,11 @@ public class InterfaceParametros {
 	    TableColumn tblclmnConflitos = new TableColumn(table, SWT.NONE);
 	    tblclmnConflitos.setWidth(61);
 	    tblclmnConflitos.setText("Conflitos");
+	    
+	    Model model = new Model();
+	    List<Individuo> lista = model.inicializarPopulacao(20);
+	    model.avaliarPopulacao(lista);
+	    
 	    
 		shell.open();
 		shell.layout();
