@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import br.unisul.controller.Controller;
+import br.unisul.model.enums.TipoSelecao;
 
 public class InterfaceParametros {
 
@@ -30,6 +31,7 @@ public class InterfaceParametros {
 	Spinner spinnerTamanhoPopulacao;
 	Button radioElitista;
 	Button radioRoleta;
+	Spinner spinnerDivisorPopulacao;
 	private Text txtTaxaMutacao;
 	private Text txtTaxaRecombinacao;
 	private Table table;
@@ -66,7 +68,7 @@ public class InterfaceParametros {
 	    
 	    Label lblPontoDeCorte = new Label(shell, SWT.NONE);
 	    lblPontoDeCorte.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-	    lblPontoDeCorte.setBounds(10, 56, 87, 15);
+	    lblPontoDeCorte.setBounds(10, 87, 87, 15);
 	    lblPontoDeCorte.setText("Ponto de Corte:");
 	    
 	    checkBoxPontoCorteAleatorio = new Button(shell, SWT.CHECK);
@@ -80,73 +82,74 @@ public class InterfaceParametros {
 	    		}
 	    	}
 	    });
-	    checkBoxPontoCorteAleatorio.setBounds(101, 42, 75, 16);
+	    checkBoxPontoCorteAleatorio.setBounds(101, 73, 75, 16);
 	    checkBoxPontoCorteAleatorio.setText("Aleat\u00F3rio");
 	    
 	    spinnerPontoCorte = new Spinner(shell, SWT.BORDER);
-	    spinnerPontoCorte.setBounds(101, 64, 47, 22);
+	    spinnerPontoCorte.setBounds(101, 95, 47, 22);
 	    
 	    Label label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-	    label.setBounds(10, 92, 166, 7);
+	    label.setBounds(10, 123, 166, 7);
 	    
 	    Label lblNumDeGeracoes = new Label(shell, SWT.NONE);
 	    lblNumDeGeracoes.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-	    lblNumDeGeracoes.setBounds(10, 105, 90, 15);
+	    lblNumDeGeracoes.setBounds(10, 136, 90, 15);
 	    lblNumDeGeracoes.setText("N\u00BA de Gera\u00E7\u00F5es:");
 	    
 	    spinnerNumGeracoes = new Spinner(shell, SWT.BORDER);
-	    spinnerNumGeracoes.setBounds(101, 102, 47, 22);
+	    spinnerNumGeracoes.setBounds(101, 133, 47, 22);
 	    
 	    Label label_1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-	    label_1.setBounds(10, 126, 166, 7);
+	    label_1.setBounds(10, 157, 166, 7);
 	    
 	    Label lblTipoDeReproduo = new Label(shell, SWT.NONE);
 	    lblTipoDeReproduo.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-	    lblTipoDeReproduo.setBounds(10, 139, 120, 15);
-	    lblTipoDeReproduo.setText("Tipo de Reprodu\u00E7\u00E3o:");
+	    lblTipoDeReproduo.setBounds(10, 170, 120, 15);
+	    lblTipoDeReproduo.setText("Tipo de Sele\u00E7\u00E3o Pais:");
 	    
 	    radioElitista = new Button(shell, SWT.RADIO);
-	    radioElitista.setBounds(10, 160, 61, 16);
+	    radioElitista.setSelection(true);
+	    radioElitista.setBounds(10, 191, 61, 16);
 	    radioElitista.setText("Elitista");
 	    
 	    radioRoleta = new Button(shell, SWT.RADIO);
-	    radioRoleta.setBounds(77, 160, 61, 16);
+	    radioRoleta.setBounds(77, 191, 61, 16);
 	    radioRoleta.setText("Roleta");
 	    
 	    Label label_2 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-	    label_2.setBounds(10, 182, 166, 7);
+	    label_2.setBounds(10, 213, 166, 7);
 	    
 	    lblTaxaDeMutacao = new Label(shell, SWT.NONE);
 	    lblTaxaDeMutacao.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-	    lblTaxaDeMutacao.setBounds(10, 195, 97, 15);
+	    lblTaxaDeMutacao.setBounds(10, 226, 97, 15);
 	    lblTaxaDeMutacao.setText("Taxa de Muta\u00E7\u00E3o:");
 	    
 	    Label label_3 = new Label(shell, SWT.NONE);
 	    label_3.setText("%");
-	    label_3.setBounds(140, 195, 16, 15);
+	    label_3.setBounds(140, 226, 16, 15);
 	    
 	    txtTaxaMutacao = new Text(shell, SWT.BORDER);
 	    txtTaxaMutacao.setText("0");
-	    txtTaxaMutacao.setBounds(108, 192, 31, 21);
+	    txtTaxaMutacao.setBounds(108, 223, 31, 21);
 	    
 	    Label label_4 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-	    label_4.setBounds(10, 216, 166, 7);
+	    label_4.setBounds(10, 247, 166, 7);
 	    
 	    Label lblTaxaDeRecombinacao = new Label(shell, SWT.NONE);
 	    lblTaxaDeRecombinacao.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-	    lblTaxaDeRecombinacao.setBounds(10, 229, 129, 15);
+	    lblTaxaDeRecombinacao.setBounds(10, 260, 129, 15);
 	    lblTaxaDeRecombinacao.setText("Taxa de Recombina\u00E7\u00E3o:");
 	    
 	    txtTaxaRecombinacao = new Text(shell, SWT.BORDER);
 	    txtTaxaRecombinacao.setText("100");
-	    txtTaxaRecombinacao.setBounds(140, 226, 31, 21);
+	    txtTaxaRecombinacao.setBounds(140, 257, 31, 21);
 	    
 	    Label label_5 = new Label(shell, SWT.NONE);
-	    label_5.setBounds(174, 229, 16, 15);
+	    label_5.setBounds(174, 260, 16, 15);
 	    label_5.setText("%");
 	    
 	    Label label_6 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-	    label_6.setBounds(10, 250, 166, 7);
+	    label_6.setBounds(10, 281, 166, 7);
 	    
 	    Button btnProcessar = new Button(shell, SWT.NONE);
 	    btnProcessar.addSelectionListener(new SelectionAdapter() {
@@ -158,16 +161,18 @@ public class InterfaceParametros {
 	    						   Integer.parseInt(txtTaxaMutacao.getText()),
 	    						   Integer.parseInt(txtTaxaRecombinacao.getText()),
 	    						   spinnerNumGeracoes.getSelection(),
-	    						   spinnerTamanhoPopulacao.getSelection());
+	    						   spinnerTamanhoPopulacao.getSelection(),
+	    						   spinnerDivisorPopulacao.getSelection(),
+	    						   radioElitista.getSelection() ? TipoSelecao.ELITISTA : TipoSelecao.ROLETA);
 	    		
 	    		controller.processar();
 	    	}
 	    });
-	    btnProcessar.setBounds(10, 263, 120, 25);
+	    btnProcessar.setBounds(10, 310, 120, 25);
 	    btnProcessar.setText("Processar");
 	    
 	    table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-	    table.setBounds(10, 294, 324, 257);
+	    table.setBounds(383, 8, 324, 257);
 	    table.setHeaderVisible(true);
 	    table.setLinesVisible(true);
 	    
@@ -213,7 +218,7 @@ public class InterfaceParametros {
 	    tblclmnConflitos.setText("Conflitos");
 	    
 	    Label label_7 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-	    label_7.setBounds(10, 29, 166, 7);
+	    label_7.setBounds(10, 60, 166, 7);
 	    
 	    Label lblTamanhoPopulaoInicial = new Label(shell, SWT.NONE);
 	    lblTamanhoPopulaoInicial.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
@@ -222,6 +227,14 @@ public class InterfaceParametros {
 	    
 	    spinnerTamanhoPopulacao = new Spinner(shell, SWT.BORDER);
 	    spinnerTamanhoPopulacao.setBounds(159, 5, 47, 22);
+	    
+	    Label lblDivisorDePopulao = new Label(shell, SWT.NONE);
+	    lblDivisorDePopulao.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+	    lblDivisorDePopulao.setBounds(34, 29, 120, 15);
+	    lblDivisorDePopulao.setText("Divisor de popula\u00E7\u00E3o:");
+	    
+	    spinnerDivisorPopulacao = new Spinner(shell, SWT.BORDER);
+	    spinnerDivisorPopulacao.setBounds(159, 29, 47, 22);
 	    
 		shell.open();
 		shell.layout();
