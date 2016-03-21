@@ -1,5 +1,8 @@
 package br.unisul.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -14,10 +17,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import br.unisul.controller.Controller;
+import br.unisul.model.domain.Geracao;
+import br.unisul.model.domain.Individuo;
 import br.unisul.model.enums.TipoSelecao;
 
 public class InterfaceParametros {
@@ -35,6 +41,7 @@ public class InterfaceParametros {
 	private Text txtTaxaMutacao;
 	private Text txtTaxaRecombinacao;
 	private Table table;
+	private Table tableResultados;
 
 	/**
 	 * Launch the application.
@@ -151,6 +158,11 @@ public class InterfaceParametros {
 	    Label label_6 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 	    label_6.setBounds(10, 281, 166, 7);
 	    
+	    table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+	    table.setBounds(383, 8, 324, 257);
+	    table.setHeaderVisible(true);
+	    table.setLinesVisible(true);
+	    
 	    Button btnProcessar = new Button(shell, SWT.NONE);
 	    btnProcessar.addSelectionListener(new SelectionAdapter() {
 	    	@Override
@@ -165,16 +177,13 @@ public class InterfaceParametros {
 	    						   spinnerDivisorPopulacao.getSelection(),
 	    						   radioElitista.getSelection() ? TipoSelecao.ELITISTA : TipoSelecao.ROLETA);
 	    		
-	    		controller.processar();
+	    		List<Geracao> geracoes = controller.processar();
+	    		
+	    		preencherTabela(geracoes);
 	    	}
 	    });
 	    btnProcessar.setBounds(10, 310, 120, 25);
 	    btnProcessar.setText("Processar");
-	    
-	    table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-	    table.setBounds(383, 8, 324, 257);
-	    table.setHeaderVisible(true);
-	    table.setLinesVisible(true);
 	    
 	    TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
 	    tblclmnNewColumn.setToolTipText("N\u00FAmero da Gera\u00E7\u00E3o");
@@ -226,7 +235,8 @@ public class InterfaceParametros {
 	    lblTamanhoPopulaoInicial.setText("Tamanho Popula\u00E7\u00E3o Inicial:");
 	    
 	    spinnerTamanhoPopulacao = new Spinner(shell, SWT.BORDER);
-	    spinnerTamanhoPopulacao.setBounds(159, 5, 47, 22);
+	    spinnerTamanhoPopulacao.setMaximum(10000000);
+	    spinnerTamanhoPopulacao.setBounds(159, 5, 66, 22);
 	    
 	    Label lblDivisorDePopulao = new Label(shell, SWT.NONE);
 	    lblDivisorDePopulao.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
@@ -234,7 +244,55 @@ public class InterfaceParametros {
 	    lblDivisorDePopulao.setText("Divisor de popula\u00E7\u00E3o:");
 	    
 	    spinnerDivisorPopulacao = new Spinner(shell, SWT.BORDER);
+	    spinnerDivisorPopulacao.setMaximum(7);
+	    spinnerDivisorPopulacao.setMinimum(1);
 	    spinnerDivisorPopulacao.setBounds(159, 29, 47, 22);
+	    
+	    tableResultados = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
+	    tableResultados.setLinesVisible(true);
+	    tableResultados.setHeaderVisible(true);
+	    tableResultados.setBounds(383, 294, 324, 257);
+	    
+	    TableColumn tableColumn_8 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_8.setWidth(57);
+	    tableColumn_8.setToolTipText("N\u00FAmero da Gera\u00E7\u00E3o");
+	    tableColumn_8.setText("Gera\u00E7\u00E3o");
+	    
+	    TableColumn tableColumn_9 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_9.setWidth(25);
+	    tableColumn_9.setText("1");
+	    
+	    TableColumn tableColumn_10 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_10.setWidth(25);
+	    tableColumn_10.setText("2");
+	    
+	    TableColumn tableColumn_11 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_11.setWidth(25);
+	    tableColumn_11.setText("3");
+	    
+	    TableColumn tableColumn_12 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_12.setWidth(25);
+	    tableColumn_12.setText("4");
+	    
+	    TableColumn tableColumn_13 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_13.setWidth(25);
+	    tableColumn_13.setText("5");
+	    
+	    TableColumn tableColumn_14 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_14.setWidth(25);
+	    tableColumn_14.setText("6");
+	    
+	    TableColumn tableColumn_15 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_15.setWidth(25);
+	    tableColumn_15.setText("7");
+	    
+	    TableColumn tableColumn_16 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_16.setWidth(25);
+	    tableColumn_16.setText("8");
+	    
+	    TableColumn tableColumn_17 = new TableColumn(tableResultados, SWT.NONE);
+	    tableColumn_17.setWidth(61);
+	    tableColumn_17.setText("Conflitos");
 	    
 		shell.open();
 		shell.layout();
@@ -243,6 +301,57 @@ public class InterfaceParametros {
 				display.sleep();
 			}
 		}
+	}
+	
+	public void preencherTabela(List<Geracao> geracoes) {
+		
+		table.clearAll();
+		tableResultados.clearAll();
+		
+		List<int[]> resultados = new ArrayList<int[]>();
+		
+		for (Geracao geracao : geracoes) {
+			
+			for (Individuo individuo : geracao.getPopulacao()) {
+				
+				TableItem linha = new TableItem(table, SWT.NONE);
+				
+				linha.setText(0, String.valueOf(geracao.getNumeroGeracao()));
+				linha.setText(1, String.valueOf(individuo.array[0]));
+				linha.setText(2, String.valueOf(individuo.array[1]));
+				linha.setText(3, String.valueOf(individuo.array[2]));
+				linha.setText(4, String.valueOf(individuo.array[3]));
+				linha.setText(5, String.valueOf(individuo.array[4]));
+				linha.setText(6, String.valueOf(individuo.array[5]));
+				linha.setText(7, String.valueOf(individuo.array[6]));
+				linha.setText(8, String.valueOf(individuo.array[7]));
+				
+				linha.setText(9, String.valueOf(individuo.qtdColisoes));
+				
+				if(individuo.qtdColisoes == 0) {
+					linha.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+					
+					TableItem linhaResultado = new TableItem(tableResultados, SWT.NONE);
+					linhaResultado.setText(0, String.valueOf(geracao.getNumeroGeracao()));
+					linhaResultado.setText(1, String.valueOf(individuo.array[0]));
+					linhaResultado.setText(2, String.valueOf(individuo.array[1]));
+					linhaResultado.setText(3, String.valueOf(individuo.array[2]));
+					linhaResultado.setText(4, String.valueOf(individuo.array[3]));
+					linhaResultado.setText(5, String.valueOf(individuo.array[4]));
+					linhaResultado.setText(6, String.valueOf(individuo.array[5]));
+					linhaResultado.setText(7, String.valueOf(individuo.array[6]));
+					linhaResultado.setText(8, String.valueOf(individuo.array[7]));
+					linhaResultado.setText(9, String.valueOf(individuo.qtdColisoes));
+					
+					linhaResultado.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+					
+					resultados.add(individuo.array);
+					
+				}
+			}
+			
+		}
+		
 	}
 
 	/**

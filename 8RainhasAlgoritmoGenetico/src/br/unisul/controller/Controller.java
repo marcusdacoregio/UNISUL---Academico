@@ -1,7 +1,10 @@
 package br.unisul.controller;
 
+import java.util.List;
+
 import br.unisul.controller.dto.ParametrosDTO;
 import br.unisul.model.Model;
+import br.unisul.model.domain.Geracao;
 import br.unisul.model.enums.TipoSelecao;
 
 public class Controller {
@@ -22,9 +25,9 @@ public class Controller {
 	}
 	
 	
-	public void processar() {
+	public List<Geracao> processar() {
 		
-		model.obterMelhorSolucao();
+		return model.obterMelhorSolucao();
 		
 	}
 	
