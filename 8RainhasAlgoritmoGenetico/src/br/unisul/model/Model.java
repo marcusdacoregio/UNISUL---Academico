@@ -21,94 +21,145 @@ public class Model {
 	
 	private static Random random;
 	private ParametrosDTO parametros;
+	private List<Individuo> solucoes;
 	
 	public Model(ParametrosDTO parametros) {
 		this.parametros = parametros;
+		solucoes = new ArrayList<Individuo>();
 	}
 	
-	public List<Geracao> obterMelhorSolucao() {
-		List<Individuo> populacao = inicializarPopulacao(parametros.getTamanhoPopulacaoInicial());
-		
+	public List<Geracao> processar() {
+		List<Individuo> populacao = inicializarPopulacao(parametros
+				.getTamanhoPopulacaoInicial());
+
 		List<Geracao> geracoes = new ArrayList<Geracao>();
-		
-		for(int i = 0; i < parametros.getNumeroGeracoes(); i++) {
+
+		for (int i = 0; i < parametros.getNumeroGeracoes(); i++) {
 			Geracao geracao = new Geracao();
-			geracao.setNumeroGeracao(i+1);
+			geracao.setNumeroGeracao(i + 1);
 			geracao.setPopulacao(populacao);
-			
+
 			geracoes.add(geracao);
-			
+
 			avaliarPopulacao(populacao);
 			populacao = selecionarPais(populacao);
 			recombinarEaplicarMutacao(populacao);
-			System.out.println("Geração " + (i+1) + " - " + populacao.size());
+			System.out.println("Geração " + (i + 1) + " - " + populacao.size());
 		}
-		
+
 		return geracoes;
 	}
 	
-	private List<Individuo> recombinarEaplicarMutacao(List<Individuo> populacaoPais) {
-		
+	private List<Individuo> recombinarEaplicarMutacao(
+			List<Individuo> populacaoPais) {
+
 		double taxaRecombinacao = ((double) parametros.getTaxaRecombinacao()) / 100;
-		
+
 		double resultado = populacaoPais.size() * taxaRecombinacao;
 		int quantidadeIndividuosParaRecombinar = (int) resultado;
-		
-		List<Integer> posicoesAleatorias = gerarPosicoesAleatoriasDeArray(populacaoPais, quantidadeIndividuosParaRecombinar);
-		
+
+		List<Integer> posicoesAleatorias = gerarPosicoesAleatoriasDeArray(
+				populacaoPais, quantidadeIndividuosParaRecombinar);
+
 		recombinar(populacaoPais, posicoesAleatorias);
-		
+
 		aplicarMutacao(populacaoPais);
-		
+
 		return populacaoPais;
 	}
 	
 	private void aplicarMutacao(List<Individuo> populacao) {
 		
+		if(vaiOcorrerMutacao()) {
+			
+			if(random == null) { 
+				random = new Random();
+			}
+			
+			int posicaoIndividuoAleatorio = random.nextInt(populacao.size());
+			
+			Individuo individuo = populacao.get(posicaoIndividuoAleatorio);
+			
+			swap(individuo);
+			
+			populacao.set(posicaoIndividuoAleatorio, individuo);
+			
+		}
+		
 	}
 	
-	private List<Individuo> recombinar(List<Individuo> populacaoPais, List<Integer> posicoesAleatorias) {
-		List<Individuo> filhosGerados = new ArrayList<Individuo>();
+	private void swap(Individuo individuo) {
 		
-		while(posicoesAleatorias.size() > 0) {
-			//Embaralha lista para pegar os pais aleatóriamente
+		int primeiraPosicao = random.nextInt(individuo.array.length);
+		int segundaPosicao = random.nextInt(individuo.array.length);
+		
+		while(segundaPosicao == primeiraPosicao) {
+			segundaPosicao = random.nextInt(individuo.array.length);
+		}
+		
+		int valorDaPrimeiraPosicao = individuo.array[primeiraPosicao];
+		int valorDaSegundaPosicao = individuo.array[segundaPosicao];
+		
+		individuo.array[primeiraPosicao] = valorDaSegundaPosicao;
+		individuo.array[segundaPosicao] = valorDaPrimeiraPosicao;
+		
+		individuo.setMutante(true);
+	}
+	
+	private boolean vaiOcorrerMutacao() {
+		double taxaMutacao = ((double) parametros.getTaxaMutacao()) / 100;
+		
+		if(Math.random() <= taxaMutacao) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private List<Individuo> recombinar(List<Individuo> populacaoPais,
+			List<Integer> posicoesAleatorias) {
+		List<Individuo> filhosGerados = new ArrayList<Individuo>();
+
+		while (posicoesAleatorias.size() > 0) {
+			// Embaralha lista para pegar os pais aleatóriamente
 			Collections.shuffle(posicoesAleatorias);
-			
-			//Verificar se existem duas posições ainda para pegar
-			
+
+			// Verificar se existem duas posições ainda para pegar
+
 			Integer posicaoPai = null;
 			Integer posicaoMae = null;
-			
-			if(posicoesAleatorias.size() > 1) {
+
+			if (posicoesAleatorias.size() > 1) {
 				posicaoPai = posicoesAleatorias.get(0);
 				posicaoMae = posicoesAleatorias.get(1);
-				
-				//Remove as posições que ja foram usadas
+
+				// Remove as posições que ja foram usadas
 				posicoesAleatorias.remove(0);
 				posicoesAleatorias.remove(0);
-			} else { // Caso só exista uma posição, precisamos pegar um pai ou mae aleatório na lista completa
-				if(posicoesAleatorias.size() != 0) {
+			} else { // Caso só exista uma posição, precisamos pegar um pai ou
+						// mae aleatório na lista completa
+				if (posicoesAleatorias.size() != 0) {
 					posicaoPai = posicoesAleatorias.get(0);
 					posicaoMae = random.nextInt(populacaoPais.size());
-					//Remove as posições que ja foram usadas
+					// Remove as posições que ja foram usadas
 					posicoesAleatorias.remove(0);
 				}
 			}
 
 			Individuo pai = populacaoPais.get(posicaoPai);
 			Individuo mae = populacaoPais.get(posicaoMae);
-			
+
 			int pontoDeCorte = obterPontoDeCorte(pai.array.length);
-			
+
 			Individuo filho1 = aplicarCutAndCrossfill(pai, mae, pontoDeCorte);
 			Individuo filho2 = aplicarCutAndCrossfill(mae, pai, pontoDeCorte);
-			
+
 			filhosGerados.add(filho1);
 			filhosGerados.add(filho2);
 		}
-		
+
 		populacaoPais.addAll(filhosGerados);
-		
+
 		return populacaoPais;
 	}
 	
@@ -219,6 +270,10 @@ public class Model {
 	private void avaliarPopulacao(List<Individuo> populacao) {
 		for (Individuo individuo : populacao) {
 			individuo.qtdColisoes = contarConflitos(individuo.array);
+			
+			if(individuo.qtdColisoes == 0 && !solucoes.contains(individuo)) {
+				solucoes.add(individuo);
+			}
 		}
 	}
 	
@@ -362,5 +417,9 @@ public class Model {
     	
     	return false;
     }
+
+	public List<Individuo> getSolucoes() {
+		return solucoes;
+	}
 
 }

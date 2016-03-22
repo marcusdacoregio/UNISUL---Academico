@@ -159,7 +159,7 @@ public class InterfaceParametros {
 	    label_6.setBounds(10, 281, 166, 7);
 	    
 	    table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-	    table.setBounds(383, 8, 324, 257);
+	    table.setBounds(383, 8, 391, 257);
 	    table.setHeaderVisible(true);
 	    table.setLinesVisible(true);
 	    
@@ -226,6 +226,10 @@ public class InterfaceParametros {
 	    tblclmnConflitos.setWidth(61);
 	    tblclmnConflitos.setText("Conflitos");
 	    
+	    TableColumn tblclmnMutante = new TableColumn(table, SWT.NONE);
+	    tblclmnMutante.setWidth(67);
+	    tblclmnMutante.setText("Mutante");
+	    
 	    Label label_7 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 	    label_7.setBounds(10, 60, 166, 7);
 	    
@@ -251,7 +255,7 @@ public class InterfaceParametros {
 	    tableResultados = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
 	    tableResultados.setLinesVisible(true);
 	    tableResultados.setHeaderVisible(true);
-	    tableResultados.setBounds(383, 294, 324, 257);
+	    tableResultados.setBounds(383, 294, 391, 257);
 	    
 	    TableColumn tableColumn_8 = new TableColumn(tableResultados, SWT.NONE);
 	    tableColumn_8.setWidth(57);
@@ -294,6 +298,10 @@ public class InterfaceParametros {
 	    tableColumn_17.setWidth(61);
 	    tableColumn_17.setText("Conflitos");
 	    
+	    TableColumn tblclmnMutante_1 = new TableColumn(tableResultados, SWT.NONE);
+	    tblclmnMutante_1.setWidth(67);
+	    tblclmnMutante_1.setText("Mutante");
+	    
 		shell.open();
 		shell.layout();
 		while (!shell.isDisposed()) {
@@ -327,6 +335,7 @@ public class InterfaceParametros {
 				linha.setText(8, String.valueOf(individuo.array[7]));
 				
 				linha.setText(9, String.valueOf(individuo.qtdColisoes));
+				linha.setText(10, individuo.isMutante() ? "SIM" : "NÃO");
 				
 				if(individuo.qtdColisoes == 0) {
 					linha.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
@@ -342,6 +351,7 @@ public class InterfaceParametros {
 					linhaResultado.setText(7, String.valueOf(individuo.array[6]));
 					linhaResultado.setText(8, String.valueOf(individuo.array[7]));
 					linhaResultado.setText(9, String.valueOf(individuo.qtdColisoes));
+					linhaResultado.setText(10, individuo.isMutante() ? "SIM" : "NÃO");
 					
 					linhaResultado.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
 					
