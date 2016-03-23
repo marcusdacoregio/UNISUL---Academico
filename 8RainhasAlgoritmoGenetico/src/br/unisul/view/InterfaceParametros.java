@@ -220,7 +220,6 @@ public class InterfaceParametros {
 	    styledTextResultados = new StyledText(shell, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
 	    styledTextResultados.setDoubleClickEnabled(false);
 	    styledTextResultados.setEditable(false);
-	    styledTextResultados.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 	    styledTextResultados.setBounds(273, 294, 485, 260);
 	    
 	    Label lblSoluesEncontradas = new Label(shell, SWT.NONE);
@@ -249,8 +248,10 @@ public class InterfaceParametros {
 			
 		if(controller.getSolucoes().size() > 0) {
 			gerarTextoInformacaoResultado();
+			styledTextResultados.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GREEN));
 		} else {
 			styledTextResultados.setText("Nenhuma solução encontrada.");
+			styledTextResultados.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_RED));
 		}
 		
 		lblProcessando.setText("");
