@@ -41,32 +41,17 @@ public class Model {
 
 			System.out.println("Geração " + (i + 1) + " - " + populacao.size());
 
-			avaliarPopulacao(populacao);
-//			populacao = selecionarPais(populacao);
+			avaliarPopulacao(geracao);
+			
 			List<Individuo> pais = selecionarPais(populacao);
 			
 			List<Individuo> populacaoNova = recombinarEaplicarMutacao(pais);
-			
-			avaliarPopulacao(populacaoNova);
-//			List<Individuo> sobreviventes = selecionarSobreviventes(populacaoNova);
 			
 			populacao = populacaoNova;
 		}
 
 		return geracoes;
 	}
-	
-//	private List<Individuo> selecionarSobreviventes(
-//			List<Individuo> populacaoNova) {
-//		
-//		double resultado = ((double) populacaoNova.size()) * 1;
-//		
-//		int quantidadeSobreviventes = (int) resultado;
-//		
-//		List<Individuo> novaPopulacao = selecionarIndividuosModoElitista(populacaoNova, quantidadeSobreviventes);
-//		
-//		return novaPopulacao;
-//	}
 
 	private List<Individuo> recombinarEaplicarMutacao(
 			List<Individuo> populacao) {
@@ -83,19 +68,14 @@ public class Model {
 	
 	private void aplicarMutacao(List<Individuo> populacao) {
 		
-		if(vaiOcorrerMutacao()) {
+		for (Individuo individuo : populacao) {
 			
-			if(random == null) { 
-				random = new Random();
+			if(vaiOcorrerMutacao()) {
+				
+				swap(individuo);
+				individuo.setMutante(Boolean.TRUE);
+				
 			}
-			
-			int posicaoIndividuoAleatorio = random.nextInt(populacao.size());
-			
-			Individuo individuo = populacao.get(posicaoIndividuoAleatorio);
-			
-			swap(individuo);
-			
-			populacao.set(posicaoIndividuoAleatorio, individuo);
 			
 		}
 		
@@ -115,12 +95,10 @@ public class Model {
 		
 		individuo.array[primeiraPosicao] = valorDaSegundaPosicao;
 		individuo.array[segundaPosicao] = valorDaPrimeiraPosicao;
-		
-		individuo.setMutante(true);
 	}
 	
 	private boolean vaiOcorrerMutacao() {
-		double taxaMutacao = ((double) parametros.getTaxaMutacao()) / 100;
+		double taxaMutacao = ((double) parametros.getTaxaMutacao()) / 100.0;
 		
 		if(Math.random() <= taxaMutacao) {
 			return true;
@@ -129,84 +107,6 @@ public class Model {
 		}
 	}
 	
-//	private List<Individuo> recombinar(List<Individuo> populacaoPais) {
-//		List<Individuo> filhosGerados = new ArrayList<Individuo>();
-//
-//		while (posicoesAleatorias.size() > 0) {
-//			// Embaralha lista para pegar os pais aleatóriamente
-//			Collections.shuffle(posicoesAleatorias);
-//
-//			// Verificar se existem duas posições ainda para pegar
-//
-//			Integer posicaoPai = null;
-//			Integer posicaoMae = null;
-//
-//			if (posicoesAleatorias.size() > 1) {
-//				posicaoPai = posicoesAleatorias.get(0);
-//				posicaoMae = posicoesAleatorias.get(1);
-//
-//				// Remove as posições que ja foram usadas
-//				posicoesAleatorias.remove(0);
-//				posicoesAleatorias.remove(0);
-//			} else { // Caso só exista uma posição, precisamos pegar um pai ou
-//						// mae aleatório na lista completa
-//				if (posicoesAleatorias.size() != 0) {
-//					posicaoPai = posicoesAleatorias.get(0);
-//					posicaoMae = random.nextInt(populacaoPais.size());
-//					// Remove as posições que ja foram usadas
-//					posicoesAleatorias.remove(0);
-//				}
-//			}
-//
-//			Individuo pai = populacaoPais.get(posicaoPai);
-//			Individuo mae = populacaoPais.get(posicaoMae);
-//
-//			int pontoDeCorte = obterPontoDeCorte(pai.array.length);
-//
-//			Individuo filho1 = aplicarCutAndCrossfill(pai, mae, pontoDeCorte);
-//			Individuo filho2 = aplicarCutAndCrossfill(mae, pai, pontoDeCorte);
-//
-//			filhosGerados.add(filho1);
-//			filhosGerados.add(filho2);
-//		}
-//
-//		populacaoPais.addAll(filhosGerados);
-//
-//		return populacaoPais;
-//	}
-	
-//	private List<Integer> gerarPosicoesAleatoriasDeArray(List<Individuo> populacao, int quantidadePosicoes) {
-//		
-//		Set<Integer> indexIndividuos = new HashSet<Integer>();
-//		
-//		while(indexIndividuos.size() < quantidadePosicoes) {
-//			
-//			if(random == null){
-//				random = new Random();
-//			}
-//			
-//			indexIndividuos.add(random.nextInt(populacao.size()));
-//			
-//		}
-//		
-//		return new ArrayList<Integer>(indexIndividuos);
-//	}
-	
-//	private Integer escolherNumeroRandomEmLista(List<Integer> lista, List<Integer> numerosJaEscolhidos) {
-//		if(random == null)
-//			random = new Random();
-//		
-//		Integer numeroRandom = null;
-//		
-//		do{
-//			
-//			numeroRandom = lista.get(random.nextInt(lista.size()));
-//			
-//		} while(numerosJaEscolhidos.contains(numeroRandom));
-//		
-//		
-//		return numeroRandom;
-//	}
 	
 	private List<Individuo> inicializarPopulacao(int tamanhoPopulacao) {
 		
@@ -226,11 +126,12 @@ public class Model {
 		return populacao;
 	}
 	
-	private void avaliarPopulacao(List<Individuo> populacao) {
-		for (Individuo individuo : populacao) {
+	private void avaliarPopulacao(Geracao geracao) {
+		for (Individuo individuo : geracao.getPopulacao()) {
 			individuo.qtdColisoes = contarConflitos(individuo.array);
 			
 			if(individuo.qtdColisoes == 0 && !isArrayPresenteEmListaSolucoes(individuo.array)) {
+				individuo.setNumeroGeracao(geracao.getNumeroGeracao());
 				solucoes.add(individuo);
 			}
 		}

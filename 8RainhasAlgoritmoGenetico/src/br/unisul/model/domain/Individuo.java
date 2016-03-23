@@ -9,13 +9,23 @@ public class Individuo {
 	public Integer qtdColisoes = null;
 	private boolean mutante;
 	
+	private Integer numeroGeracao;
+	
 	public boolean isMutante() {
 		return mutante;
 	}
+	
 	public void setMutante(boolean mutante) {
 		this.mutante = mutante;
 	}
 	
+	public Integer getNumeroGeracao() {
+		return numeroGeracao;
+	}
+	public void setNumeroGeracao(Integer numeroGeracao) {
+		this.numeroGeracao = numeroGeracao;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -26,6 +36,7 @@ public class Individuo {
 				+ ((qtdColisoes == null) ? 0 : qtdColisoes.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -46,5 +57,6 @@ public class Individuo {
 			return false;
 		return true;
 	}
+	
 
 }
