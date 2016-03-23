@@ -93,6 +93,8 @@ public class InterfaceParametros {
 	    checkBoxPontoCorteAleatorio.setText("Aleat\u00F3rio");
 	    
 	    spinnerPontoCorte = new Spinner(shell, SWT.BORDER);
+	    spinnerPontoCorte.setMaximum(7);
+	    spinnerPontoCorte.setMinimum(1);
 	    spinnerPontoCorte.setBounds(101, 95, 55, 22);
 	    
 	    Label label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
