@@ -1,5 +1,7 @@
 package br.unisul.controller.dto;
 
+import java.util.Random;
+
 import br.unisul.model.enums.TipoSelecao;
 
 public class ParametrosDTO {
@@ -24,8 +26,16 @@ public class ParametrosDTO {
 		this.tamanhoPopulacaoInicial = tamanhoPopulacaoInicial;
 		this.divisorPopulacao = divisorPopulacao;
 		this.tipoSelecaoPais = tipoSelecaoPais;
+		
+		definirPontoDeCorte();
 	}
 	
+	private void definirPontoDeCorte() {
+		if(pontoCorteAleatorio) {
+			pontoCorte = new Random().nextInt(7) + 1;
+		}
+	}
+
 	public boolean isPontoCorteAleatorio() {
 		return pontoCorteAleatorio;
 	}

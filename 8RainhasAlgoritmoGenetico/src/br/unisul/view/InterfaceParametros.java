@@ -1,6 +1,5 @@
 package br.unisul.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -42,6 +41,9 @@ public class InterfaceParametros {
 	private Text txtTaxaRecombinacao;
 	private Table table;
 	private Table tableResultados;
+	private Label lblProcessando;
+	
+	private Controller controller;
 
 	/**
 	 * Launch the application.
@@ -93,7 +95,7 @@ public class InterfaceParametros {
 	    checkBoxPontoCorteAleatorio.setText("Aleat\u00F3rio");
 	    
 	    spinnerPontoCorte = new Spinner(shell, SWT.BORDER);
-	    spinnerPontoCorte.setBounds(101, 95, 47, 22);
+	    spinnerPontoCorte.setBounds(101, 95, 55, 22);
 	    
 	    Label label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 	    label.setBounds(10, 123, 166, 7);
@@ -104,7 +106,8 @@ public class InterfaceParametros {
 	    lblNumDeGeracoes.setText("N\u00BA de Gera\u00E7\u00F5es:");
 	    
 	    spinnerNumGeracoes = new Spinner(shell, SWT.BORDER);
-	    spinnerNumGeracoes.setBounds(101, 133, 47, 22);
+	    spinnerNumGeracoes.setMaximum(10000);
+	    spinnerNumGeracoes.setBounds(101, 133, 75, 22);
 	    
 	    Label label_1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 	    label_1.setBounds(10, 157, 166, 7);
@@ -120,6 +123,7 @@ public class InterfaceParametros {
 	    radioElitista.setText("Elitista");
 	    
 	    radioRoleta = new Button(shell, SWT.RADIO);
+	    radioRoleta.setEnabled(false);
 	    radioRoleta.setBounds(77, 191, 61, 16);
 	    radioRoleta.setText("Roleta");
 	    
@@ -167,7 +171,7 @@ public class InterfaceParametros {
 	    btnProcessar.addSelectionListener(new SelectionAdapter() {
 	    	@Override
 	    	public void widgetSelected(SelectionEvent event) {
-	    		Controller controller = new Controller(
+	    		controller = new Controller(
 	    						   checkBoxPontoCorteAleatorio.getSelection(),
 	    						   spinnerPontoCorte.getSelection(),
 	    						   Integer.parseInt(txtTaxaMutacao.getText()),
@@ -176,9 +180,13 @@ public class InterfaceParametros {
 	    						   spinnerTamanhoPopulacao.getSelection(),
 	    						   spinnerDivisorPopulacao.getSelection(),
 	    						   radioElitista.getSelection() ? TipoSelecao.ELITISTA : TipoSelecao.ROLETA);
+
+	    		lblProcessando.setText("Processando...");
 	    		
 	    		List<Geracao> geracoes = controller.processar();
 	    		
+	    		
+	    		limparTabelas();
 	    		preencherTabela(geracoes);
 	    	}
 	    });
@@ -257,11 +265,6 @@ public class InterfaceParametros {
 	    tableResultados.setHeaderVisible(true);
 	    tableResultados.setBounds(383, 294, 391, 257);
 	    
-	    TableColumn tableColumn_8 = new TableColumn(tableResultados, SWT.NONE);
-	    tableColumn_8.setWidth(57);
-	    tableColumn_8.setToolTipText("N\u00FAmero da Gera\u00E7\u00E3o");
-	    tableColumn_8.setText("Gera\u00E7\u00E3o");
-	    
 	    TableColumn tableColumn_9 = new TableColumn(tableResultados, SWT.NONE);
 	    tableColumn_9.setWidth(25);
 	    tableColumn_9.setText("1");
@@ -302,6 +305,11 @@ public class InterfaceParametros {
 	    tblclmnMutante_1.setWidth(67);
 	    tblclmnMutante_1.setText("Mutante");
 	    
+	    lblProcessando = new Label(shell, SWT.NONE);
+	    lblProcessando.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_CYAN));
+	    lblProcessando.setFont(SWTResourceManager.getFont("Segoe UI", 36, SWT.NORMAL));
+	    lblProcessando.setBounds(10, 421, 307, 92);
+	    
 		shell.open();
 		shell.layout();
 		while (!shell.isDisposed()) {
@@ -311,12 +319,7 @@ public class InterfaceParametros {
 		}
 	}
 	
-	public void preencherTabela(List<Geracao> geracoes) {
-		
-		table.clearAll();
-		tableResultados.clearAll();
-		
-		List<int[]> resultados = new ArrayList<int[]>();
+	private void preencherTabela(List<Geracao> geracoes) {
 		
 		for (Geracao geracao : geracoes) {
 			
@@ -339,31 +342,38 @@ public class InterfaceParametros {
 				
 				if(individuo.qtdColisoes == 0) {
 					linha.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
-					
-					TableItem linhaResultado = new TableItem(tableResultados, SWT.NONE);
-					linhaResultado.setText(0, String.valueOf(geracao.getNumeroGeracao()));
-					linhaResultado.setText(1, String.valueOf(individuo.array[0]));
-					linhaResultado.setText(2, String.valueOf(individuo.array[1]));
-					linhaResultado.setText(3, String.valueOf(individuo.array[2]));
-					linhaResultado.setText(4, String.valueOf(individuo.array[3]));
-					linhaResultado.setText(5, String.valueOf(individuo.array[4]));
-					linhaResultado.setText(6, String.valueOf(individuo.array[5]));
-					linhaResultado.setText(7, String.valueOf(individuo.array[6]));
-					linhaResultado.setText(8, String.valueOf(individuo.array[7]));
-					linhaResultado.setText(9, String.valueOf(individuo.qtdColisoes));
-					linhaResultado.setText(10, individuo.isMutante() ? "SIM" : "NÃO");
-					
-					linhaResultado.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
-					
-					resultados.add(individuo.array);
-					
 				}
+				
 			}
 			
 		}
 		
+		for (Individuo individuo : controller.getSolucoes()) {
+			
+			TableItem linhaResultado = new TableItem(tableResultados, SWT.NONE);
+			linhaResultado.setText(0, String.valueOf(individuo.array[0]));
+			linhaResultado.setText(1, String.valueOf(individuo.array[1]));
+			linhaResultado.setText(2, String.valueOf(individuo.array[2]));
+			linhaResultado.setText(3, String.valueOf(individuo.array[3]));
+			linhaResultado.setText(4, String.valueOf(individuo.array[4]));
+			linhaResultado.setText(5, String.valueOf(individuo.array[5]));
+			linhaResultado.setText(6, String.valueOf(individuo.array[6]));
+			linhaResultado.setText(7, String.valueOf(individuo.array[7]));
+			linhaResultado.setText(8, String.valueOf(individuo.qtdColisoes));
+			linhaResultado.setText(9, individuo.isMutante() ? "SIM" : "NÃO");
+			
+			linhaResultado.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+		}
+		
+		lblProcessando.setText("");
+		
 	}
-
+	
+	private void limparTabelas() {
+		table.clearAll();
+		tableResultados.clearAll();
+	}
+	
 	/**
 	 * Create contents of the window.
 	 */

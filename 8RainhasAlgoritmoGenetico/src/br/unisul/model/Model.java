@@ -1,17 +1,16 @@
 package br.unisul.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import br.unisul.controller.dto.ParametrosDTO;
 import br.unisul.model.domain.Geracao;
@@ -38,34 +37,48 @@ public class Model {
 			Geracao geracao = new Geracao();
 			geracao.setNumeroGeracao(i + 1);
 			geracao.setPopulacao(populacao);
-
 			geracoes.add(geracao);
 
-			avaliarPopulacao(populacao);
-			populacao = selecionarPais(populacao);
-			recombinarEaplicarMutacao(populacao);
 			System.out.println("Geração " + (i + 1) + " - " + populacao.size());
+
+			avaliarPopulacao(populacao);
+//			populacao = selecionarPais(populacao);
+			List<Individuo> pais = selecionarPais(populacao);
+			
+			List<Individuo> populacaoNova = recombinarEaplicarMutacao(pais);
+			
+			avaliarPopulacao(populacaoNova);
+//			List<Individuo> sobreviventes = selecionarSobreviventes(populacaoNova);
+			
+			populacao = populacaoNova;
 		}
 
 		return geracoes;
 	}
 	
+//	private List<Individuo> selecionarSobreviventes(
+//			List<Individuo> populacaoNova) {
+//		
+//		double resultado = ((double) populacaoNova.size()) * 1;
+//		
+//		int quantidadeSobreviventes = (int) resultado;
+//		
+//		List<Individuo> novaPopulacao = selecionarIndividuosModoElitista(populacaoNova, quantidadeSobreviventes);
+//		
+//		return novaPopulacao;
+//	}
+
 	private List<Individuo> recombinarEaplicarMutacao(
-			List<Individuo> populacaoPais) {
+			List<Individuo> populacao) {
 
-		double taxaRecombinacao = ((double) parametros.getTaxaRecombinacao()) / 100;
+		RecombinaHelper helper = new RecombinaHelper(populacao, parametros);
+		
+		List<Individuo> filhos = helper.recombinar();
+		aplicarMutacao(filhos);
+		
+		populacao.addAll(filhos);
 
-		double resultado = populacaoPais.size() * taxaRecombinacao;
-		int quantidadeIndividuosParaRecombinar = (int) resultado;
-
-		List<Integer> posicoesAleatorias = gerarPosicoesAleatoriasDeArray(
-				populacaoPais, quantidadeIndividuosParaRecombinar);
-
-		recombinar(populacaoPais, posicoesAleatorias);
-
-		aplicarMutacao(populacaoPais);
-
-		return populacaoPais;
+		return populacao;
 	}
 	
 	private void aplicarMutacao(List<Individuo> populacao) {
@@ -116,138 +129,84 @@ public class Model {
 		}
 	}
 	
-	private List<Individuo> recombinar(List<Individuo> populacaoPais,
-			List<Integer> posicoesAleatorias) {
-		List<Individuo> filhosGerados = new ArrayList<Individuo>();
-
-		while (posicoesAleatorias.size() > 0) {
-			// Embaralha lista para pegar os pais aleatóriamente
-			Collections.shuffle(posicoesAleatorias);
-
-			// Verificar se existem duas posições ainda para pegar
-
-			Integer posicaoPai = null;
-			Integer posicaoMae = null;
-
-			if (posicoesAleatorias.size() > 1) {
-				posicaoPai = posicoesAleatorias.get(0);
-				posicaoMae = posicoesAleatorias.get(1);
-
-				// Remove as posições que ja foram usadas
-				posicoesAleatorias.remove(0);
-				posicoesAleatorias.remove(0);
-			} else { // Caso só exista uma posição, precisamos pegar um pai ou
-						// mae aleatório na lista completa
-				if (posicoesAleatorias.size() != 0) {
-					posicaoPai = posicoesAleatorias.get(0);
-					posicaoMae = random.nextInt(populacaoPais.size());
-					// Remove as posições que ja foram usadas
-					posicoesAleatorias.remove(0);
-				}
-			}
-
-			Individuo pai = populacaoPais.get(posicaoPai);
-			Individuo mae = populacaoPais.get(posicaoMae);
-
-			int pontoDeCorte = obterPontoDeCorte(pai.array.length);
-
-			Individuo filho1 = aplicarCutAndCrossfill(pai, mae, pontoDeCorte);
-			Individuo filho2 = aplicarCutAndCrossfill(mae, pai, pontoDeCorte);
-
-			filhosGerados.add(filho1);
-			filhosGerados.add(filho2);
-		}
-
-		populacaoPais.addAll(filhosGerados);
-
-		return populacaoPais;
-	}
+//	private List<Individuo> recombinar(List<Individuo> populacaoPais) {
+//		List<Individuo> filhosGerados = new ArrayList<Individuo>();
+//
+//		while (posicoesAleatorias.size() > 0) {
+//			// Embaralha lista para pegar os pais aleatóriamente
+//			Collections.shuffle(posicoesAleatorias);
+//
+//			// Verificar se existem duas posições ainda para pegar
+//
+//			Integer posicaoPai = null;
+//			Integer posicaoMae = null;
+//
+//			if (posicoesAleatorias.size() > 1) {
+//				posicaoPai = posicoesAleatorias.get(0);
+//				posicaoMae = posicoesAleatorias.get(1);
+//
+//				// Remove as posições que ja foram usadas
+//				posicoesAleatorias.remove(0);
+//				posicoesAleatorias.remove(0);
+//			} else { // Caso só exista uma posição, precisamos pegar um pai ou
+//						// mae aleatório na lista completa
+//				if (posicoesAleatorias.size() != 0) {
+//					posicaoPai = posicoesAleatorias.get(0);
+//					posicaoMae = random.nextInt(populacaoPais.size());
+//					// Remove as posições que ja foram usadas
+//					posicoesAleatorias.remove(0);
+//				}
+//			}
+//
+//			Individuo pai = populacaoPais.get(posicaoPai);
+//			Individuo mae = populacaoPais.get(posicaoMae);
+//
+//			int pontoDeCorte = obterPontoDeCorte(pai.array.length);
+//
+//			Individuo filho1 = aplicarCutAndCrossfill(pai, mae, pontoDeCorte);
+//			Individuo filho2 = aplicarCutAndCrossfill(mae, pai, pontoDeCorte);
+//
+//			filhosGerados.add(filho1);
+//			filhosGerados.add(filho2);
+//		}
+//
+//		populacaoPais.addAll(filhosGerados);
+//
+//		return populacaoPais;
+//	}
 	
-	private Individuo aplicarCutAndCrossfill(Individuo pai, Individuo mae, int pontoDeCorte) {
-		
-		int[] arrayEsquerdaPai = new int[pontoDeCorte];
-		int[] arrayEsquerdaMae = new int[pontoDeCorte];
-		
-		int[] arrayDireitaPai = new int[pai.array.length - pontoDeCorte];
-		int[] arrayDireitaMae = new int[mae.array.length - pontoDeCorte];
-		
-		for(int i = 0; i < pontoDeCorte; i++) {
-			arrayEsquerdaPai[i] = pai.array[i];
-			arrayEsquerdaMae[i] = mae.array[i];
-		}
-		
-		int index = 0;
-		for(int i = pontoDeCorte; i < pai.array.length; i++) {
-			arrayDireitaPai[index] = pai.array[i];
-			arrayDireitaMae[index] = mae.array[i];
-			index++;
-		}
-		
-		int[] arrayFilho = pai.array.clone();
-		int contador = 0;
-		
-		for (int i = pontoDeCorte; i < arrayFilho.length; i++) {
-			
-			arrayFilho[i] = isValorPresenteEmArray(arrayDireitaMae[contador], pai.array) ? arrayFilho[i] : arrayDireitaMae[contador];
-			contador++;
-			
-		}
-		
-		Individuo filho = new Individuo();
-		filho.array = arrayFilho;
-		
-		return filho;
-	}
+//	private List<Integer> gerarPosicoesAleatoriasDeArray(List<Individuo> populacao, int quantidadePosicoes) {
+//		
+//		Set<Integer> indexIndividuos = new HashSet<Integer>();
+//		
+//		while(indexIndividuos.size() < quantidadePosicoes) {
+//			
+//			if(random == null){
+//				random = new Random();
+//			}
+//			
+//			indexIndividuos.add(random.nextInt(populacao.size()));
+//			
+//		}
+//		
+//		return new ArrayList<Integer>(indexIndividuos);
+//	}
 	
-	private int obterPontoDeCorte(int tamanhoArray) {
-		
-		if(random == null)
-			random = new Random();
-		
-		if(parametros.isPontoCorteAleatorio()) {
-			return random.nextInt(tamanhoArray-2) + 1;
-		} else {
-			if(parametros.getPontoCorte() > tamanhoArray-1) {
-				throw new IllegalArgumentException("O ponto de corte deve estar entre 1 e " + (tamanhoArray-1));
-			} else {
-				return parametros.getPontoCorte();
-			}
-		}
-		
-	}
-	
-	private List<Integer> gerarPosicoesAleatoriasDeArray(List<Individuo> populacao, int quantidadePosicoes) {
-		
-		Set<Integer> indexIndividuos = new HashSet<Integer>();
-		
-		while(indexIndividuos.size() < quantidadePosicoes) {
-			
-			if(random == null){
-				random = new Random();
-			}
-			
-			indexIndividuos.add(random.nextInt(populacao.size()));
-			
-		}
-		
-		return new ArrayList<Integer>(indexIndividuos);
-	}
-	
-	private Integer escolherNumeroRandomEmLista(List<Integer> lista, List<Integer> numerosJaEscolhidos) {
-		if(random == null)
-			random = new Random();
-		
-		Integer numeroRandom = null;
-		
-		do{
-			
-			numeroRandom = lista.get(random.nextInt(lista.size()));
-			
-		} while(numerosJaEscolhidos.contains(numeroRandom));
-		
-		
-		return numeroRandom;
-	}
+//	private Integer escolherNumeroRandomEmLista(List<Integer> lista, List<Integer> numerosJaEscolhidos) {
+//		if(random == null)
+//			random = new Random();
+//		
+//		Integer numeroRandom = null;
+//		
+//		do{
+//			
+//			numeroRandom = lista.get(random.nextInt(lista.size()));
+//			
+//		} while(numerosJaEscolhidos.contains(numeroRandom));
+//		
+//		
+//		return numeroRandom;
+//	}
 	
 	private List<Individuo> inicializarPopulacao(int tamanhoPopulacao) {
 		
@@ -271,7 +230,7 @@ public class Model {
 		for (Individuo individuo : populacao) {
 			individuo.qtdColisoes = contarConflitos(individuo.array);
 			
-			if(individuo.qtdColisoes == 0 && !solucoes.contains(individuo)) {
+			if(individuo.qtdColisoes == 0 && !isArrayPresenteEmListaSolucoes(individuo.array)) {
 				solucoes.add(individuo);
 			}
 		}
@@ -312,24 +271,19 @@ public class Model {
 	
 	private List<Individuo> selecionarPais(List<Individuo> populacao) {
 		
+		List<Individuo> paisSelecionados = new ArrayList<Individuo>();
+		
 		int quantidadePais = populacao.size() / parametros.getDivisorPopulacao();
 		
-		switch (parametros.getTipoSelecaoPais()) {
-			case ELITISTA:
-				return populacao = selecionarPaisModoElitista(populacao, quantidadePais);
-				
-			case ROLETA:
-				
-				return null;
-		}
+		paisSelecionados.addAll(selecionarIndividuosModoElitista(populacao, quantidadePais));
 		
-		return null;
+		return paisSelecionados;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<Individuo> selecionarPaisModoElitista(List<Individuo> populacao, int quantidadePais) {
+	private List<Individuo> selecionarIndividuosModoElitista(List<Individuo> populacao, int quantidadeIndividuos) {
 		
-		List<Individuo> paisSelecionados = new ArrayList<Individuo>();
+		List<Individuo> individuosSelecionados = new ArrayList<Individuo>();
 		
 		Map<Integer, Integer> mapPosicoesEcolisoes = new HashMap<Integer, Integer>();
 		
@@ -345,15 +299,15 @@ public class Model {
 		
 		for (Integer posicao : mapPosicoesEcolisoes.keySet()) {
 			
-			if(index == quantidadePais)
+			if(index == quantidadeIndividuos)
 				break;
 			
-			paisSelecionados.add(populacao.get(posicao));
+			individuosSelecionados.add(populacao.get(posicao));
 			
 			index++;
 		}
 		
-		return paisSelecionados;
+		return individuosSelecionados;
 	}
 
     /**
@@ -372,51 +326,40 @@ public class Model {
         array[i] = array[j];
         array[j] = temp;
     }
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	private HashMap sortByValues(Map map) {
-        List list = new LinkedList(map.entrySet());
-        // Defined Custom Comparator here
-        Collections.sort(list, new Comparator() {
-             public int compare(Object o1, Object o2) {
-                return ((Comparable) ((Map.Entry) (o1)).getValue())
-                   .compareTo(((Map.Entry) (o2)).getValue());
-             }
-        });
 
-        // Here I am copying the sorted list in HashMap
-        // using LinkedHashMap to preserve the insertion order
-        HashMap sortedHashMap = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext();) {
-               Map.Entry entry = (Map.Entry) it.next();
-               sortedHashMap.put(entry.getKey(), entry.getValue());
-        } 
-        
-        return sortedHashMap;
-   }
-    
-    private void exibirPopulacao(List<Individuo> populacao) {
-    	
-    	for (Individuo individuo : populacao) {
-			
-    		for (int i : individuo.array) {
-				System.out.print(i + ", ");
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private HashMap sortByValues(Map map) {
+		List list = new LinkedList(map.entrySet());
+		// Defined Custom Comparator here
+		Collections.sort(list, new Comparator() {
+			public int compare(Object o1, Object o2) {
+				return ((Comparable) ((Map.Entry) (o1)).getValue())
+						.compareTo(((Map.Entry) (o2)).getValue());
 			}
-    		
-    		System.out.println("Colisões = " + individuo.qtdColisoes);
+		});
+
+		// Here I am copying the sorted list in HashMap
+		// using LinkedHashMap to preserve the insertion order
+		HashMap sortedHashMap = new LinkedHashMap();
+		for (Iterator it = list.iterator(); it.hasNext();) {
+			Map.Entry entry = (Map.Entry) it.next();
+			sortedHashMap.put(entry.getKey(), entry.getValue());
 		}
-    	
-    }
-    
-    private boolean isValorPresenteEmArray(int valor, int[] arrayComparar) {
-	for (int j = 0; j < arrayComparar.length; j++) {
-		if(valor == arrayComparar[j]) {
-			return true;
-		}
+
+		return sortedHashMap;
 	}
-    	
-    	return false;
-    }
+    
+    private boolean isArrayPresenteEmListaSolucoes(int[] array) {
+		for (Individuo individuo : solucoes) {
+
+			if (Arrays.equals(individuo.array, array)) {
+				return true;
+			}
+
+		}
+
+		return false;
+	}
 
 	public List<Individuo> getSolucoes() {
 		return solucoes;
