@@ -10,7 +10,7 @@ import java.util.Random;
 import br.unisul.controller.dto.ParametrosDTO;
 import br.unisul.model.domain.Geracao;
 import br.unisul.model.domain.Individuo;
-import br.unisul.util.ArrayUtil;
+import br.unisul.util.GAUtil;
 
 public class Model {
 	
@@ -115,7 +115,7 @@ public class Model {
 			Individuo individuo = new Individuo();
 			
 			int[] array = {0, 1, 2, 3, 4, 5, 6, 7};
-			ArrayUtil.shuffle(array);
+			GAUtil.shuffle(array);
 			
 			individuo.array = array;
 			
@@ -193,7 +193,7 @@ public class Model {
 			
 		}
 		
-		mapPosicoesEcolisoes = ArrayUtil.sortByValues(mapPosicoesEcolisoes);
+		mapPosicoesEcolisoes = GAUtil.sortByValues(mapPosicoesEcolisoes);
 		
 		int index = 0;
 		
