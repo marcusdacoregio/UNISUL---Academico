@@ -1,19 +1,26 @@
 package br.unisul.model.domain;
 
-public class Solution {
+public class Knapsack {
 
-	public int[] array;
+	public int[] itemArray;
 	private int lifeExpectancy;
 	private boolean mutant;
 	private Double weight;
 	private Double volume;
+	private Double value;
 	
-	public Solution(int[] array, int lifeExpectancy, boolean mutant, Double weight, Double volume) {
-		this.array = array;
+	public Knapsack(int[] itemArray) {
+		this.itemArray = itemArray;
+	}
+
+	public Knapsack(int[] itemArray, int lifeExpectancy, boolean mutant, Double weight,
+			Double volume, Double value) {
+		this(itemArray);
 		this.lifeExpectancy = lifeExpectancy;
 		this.mutant = mutant;
 		this.weight = weight;
 		this.volume = volume;
+		this.value = value;
 	}
 
 	public int getLifeExpectancy() {
@@ -46,6 +53,10 @@ public class Solution {
 
 	public void setVolume(Double volume) {
 		this.volume = volume;
+	}
+
+	public Double getValue() {
+		return value;
 	}
 
 }

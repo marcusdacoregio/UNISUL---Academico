@@ -8,7 +8,7 @@ import br.unisul.util.FileUtil;
 
 public class ItemHelper {
 	
-	public Map<Integer, Item> fillMapItens(String pathCSVitens) {
+	public Map<Integer, Item> recoverItensData(String pathCSVitens) {
 		
 		Map<Integer, Item> mapItens = new HashMap<Integer, Item>();
 		

@@ -13,7 +13,19 @@ public class ParametersDTO {
 	private boolean randomCutPoint;
 	private CutPointType cutPointType;
 	private double knapsackWeight;
-
+	
+	/**
+	 * 
+	 * @param initialPopulationSize
+	 * @param firstCutPointPosition
+	 * @param secondCutPointPosition
+	 * @param randomCutPoint
+	 * @param cutPointType
+	 * @param knapsackWeight
+	 * @param knapsackVolume
+	 * 
+	 * @see firstCutPointPosition and secondCutPointPosition would be null if randomCutPoint is true
+	 */
 	public ParametersDTO(Integer initialPopulationSize, Integer firstCutPointPosition, Integer secondCutPointPosition,
 			boolean randomCutPoint, CutPointType cutPointType, double knapsackWeight, double knapsackVolume) {
 		this.initialPopulationSize = initialPopulationSize;
