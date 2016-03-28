@@ -71,15 +71,22 @@ public class KnapsackModel {
 		
 		for (Knapsack knapsack : population.getPopulation()) {
 			
+			calculateKnapsackData(knapsack);
 			setLifeExpectancy(knapsack);
 			
 		}
 		
 	}
 
+	private void calculateKnapsackData(Knapsack knapsack) {
+		
+		
+		
+	}
+
 	private void setLifeExpectancy(Knapsack knapsack) {
 		
-		//((Valor da Mochila -  valor total possível) /  valor total possível) * numero gerações
+		//((Valor da Mochila / valor total possível) * numero gerações
 		
 		//temos que calcular o peso, volume e valor total da mochila recebida por parametro 
 		//para poder realizar os cálculos de expectativa de vida
