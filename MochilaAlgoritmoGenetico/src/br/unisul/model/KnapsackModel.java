@@ -21,14 +21,17 @@ public class KnapsackModel {
 	private Map<Integer, Item> mapItens;
 	private Population population;
 	private ParametersDTO parameters;
+	private Knapsack knapsackWithMaxedValues;
 	
 	private static Random random = new Random();
 	
 	public KnapsackModel(ParametersDTO parameters) {
 		this.parameters = parameters;
 		
-		ItemHelper helper = new ItemHelper();
+		KnapsackHelper helper = new KnapsackHelper();
 		mapItens = helper.recoverItensData(PATH_CSV_ITENS);
+		
+		knapsackWithMaxedValues = helper.recoverTotalKnapsackCapacity(PATH_CSV_ITENS);
 	}
 	
 	public void process() {
@@ -66,13 +69,40 @@ public class KnapsackModel {
 	
 	private void applyEvaluationFunction() {
 		
-		//AQUI O BICHO PEGA MEU IRMAO
+		for (Knapsack knapsack : population.getPopulation()) {
+			
+			setLifeExpectancy(knapsack);
+			
+		}
+		
+	}
+
+	private void setLifeExpectancy(Knapsack knapsack) {
+		
+		//((Valor da Mochila -  valor total possível) /  valor total possível) * numero gerações
+		
+		//temos que calcular o peso, volume e valor total da mochila recebida por parametro 
+		//para poder realizar os cálculos de expectativa de vida
 		
 	}
 
 	public static void main(String[] args) {
-		ParametersDTO parameters = new ParametersDTO(
-				100, null, null, false, CutPointType.DUAL, 80, 80);
+		
+		int initialPopulationSize = 100;;
+		Integer firstCutPointPosition = null;
+		Integer secondCutPointPosition = null;
+		boolean randomCutPoint = false;
+		CutPointType cutPointType = CutPointType.DUAL;
+		Double knapsackWeight = 80.0;
+		Double knapsackVolume = 80.0;
+		int maximumPopulationSize = 600;
+		int minimumPopulationSize = 40;
+		int disposalAmount = 50;
+		int incrementAmount = 20;
+		
+		ParametersDTO parameters = new ParametersDTO(initialPopulationSize, firstCutPointPosition, secondCutPointPosition, 
+				randomCutPoint, cutPointType, knapsackWeight, knapsackVolume, maximumPopulationSize, 
+				minimumPopulationSize, disposalAmount, incrementAmount);
 		
 		KnapsackModel model = new KnapsackModel(parameters);
 		model.process();

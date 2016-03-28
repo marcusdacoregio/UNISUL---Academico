@@ -9,6 +9,10 @@ public class Knapsack {
 	private Double volume;
 	private Double value;
 	
+	public Knapsack() {
+	
+	}
+	
 	public Knapsack(int[] itemArray) {
 		this.itemArray = itemArray;
 	}
@@ -57,6 +61,10 @@ public class Knapsack {
 
 	public Double getValue() {
 		return value;
+	}
+
+	public void setValue(Double value) {
+		this.value = value;
 	}
 
 }

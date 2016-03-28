@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.unisul.model.domain.Item;
+import br.unisul.model.domain.Knapsack;
 import br.unisul.util.FileUtil;
 
-public class ItemHelper {
+public class KnapsackHelper {
 	
 	public Map<Integer, Item> recoverItensData(String pathCSVitens) {
 		
@@ -16,11 +17,9 @@ public class ItemHelper {
 		
 		String[] eachLineFromCSV = csvContent.split(FileUtil.FILE_SEPARATOR);
 		
-		for(int i = 0; i < eachLineFromCSV.length; i++) {
-			
-			if(i == 0 || i == eachLineFromCSV.length-1) {
-				continue;
-			}
+		//Starts from 1 to avoid header
+		//Stop on lenght-1 to avoid the footer
+		for(int i = 1; i < eachLineFromCSV.length-1; i++) {
 			
 			String[] eachDataFromLine = eachLineFromCSV[i].split(";");
 			
@@ -35,6 +34,29 @@ public class ItemHelper {
 		}
 		
 		return mapItens;
+	}
+	
+	public Knapsack recoverTotalKnapsackCapacity(String pathCSVitens) {
+		
+		String csvContent = FileUtil.readCSVfile(pathCSVitens);
+		
+		String[] eachLineFromCSV = csvContent.split(FileUtil.FILE_SEPARATOR);
+		
+		int lastIndex = eachLineFromCSV.length - 1;
+		
+		Knapsack knapsack = new Knapsack();
+		
+		String[] eachDataFromLine = eachLineFromCSV[lastIndex].split(";");
+		
+		Double volume = Double.parseDouble(eachDataFromLine[2]);
+		Double weight = Double.parseDouble(eachDataFromLine[3]);
+		Double value = Double.parseDouble(eachDataFromLine[4]);
+		
+		knapsack.setVolume(volume);
+		knapsack.setWeight(weight);
+		knapsack.setValue(value);
+		
+		return knapsack;
 	}
 
 }
