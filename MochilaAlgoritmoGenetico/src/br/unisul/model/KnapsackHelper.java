@@ -9,6 +9,10 @@ import br.unisul.util.FileUtil;
 
 public class KnapsackHelper {
 	
+	public static final int INDEX_WEIGHT = 0;
+	public static final int INDEX_VOLUME = 1;
+	public static final int INDEX_VALUE = 2;
+	
 	public Map<Integer, Item> recoverItensData(String pathCSVitens) {
 		
 		Map<Integer, Item> mapItens = new HashMap<Integer, Item>();
@@ -25,9 +29,9 @@ public class KnapsackHelper {
 			
 			Integer index = Integer.parseInt(eachDataFromLine[0]);
 			String name = eachDataFromLine[1];
-			Double volume = Double.parseDouble(eachDataFromLine[2]);
-			Double weight = Double.parseDouble(eachDataFromLine[3]);
-			Double value = Double.parseDouble(eachDataFromLine[4]);
+			double volume = Double.parseDouble(eachDataFromLine[2]);
+			double weight = Double.parseDouble(eachDataFromLine[3]);
+			double value = Double.parseDouble(eachDataFromLine[4]);
 			
 			Item item = new Item(name, volume, weight, value);
 			mapItens.put(index, item);
@@ -36,7 +40,7 @@ public class KnapsackHelper {
 		return mapItens;
 	}
 	
-	public Knapsack recoverTotalKnapsackCapacity(String pathCSVitens) {
+	public double[] recoverTotalKnapsackCapacity(String pathCSVitens) {
 		
 		String csvContent = FileUtil.readCSVfile(pathCSVitens);
 		
@@ -44,19 +48,18 @@ public class KnapsackHelper {
 		
 		int lastIndex = eachLineFromCSV.length - 1;
 		
-		Knapsack knapsack = new Knapsack();
-		
 		String[] eachDataFromLine = eachLineFromCSV[lastIndex].split(";");
 		
-		Double volume = Double.parseDouble(eachDataFromLine[2]);
-		Double weight = Double.parseDouble(eachDataFromLine[3]);
-		Double value = Double.parseDouble(eachDataFromLine[4]);
+		double volume = Double.parseDouble(eachDataFromLine[2]);
+		double weight = Double.parseDouble(eachDataFromLine[3]);
+		double value = Double.parseDouble(eachDataFromLine[4]);
 		
-		knapsack.setVolume(volume);
-		knapsack.setWeight(weight);
-		knapsack.setValue(value);
+		double[] returnData = new double[3];
+		returnData[INDEX_WEIGHT] = weight;
+		returnData[INDEX_VOLUME] = volume;
+		returnData[INDEX_VALUE] = value;
 		
-		return knapsack;
+		return returnData;
 	}
 
 }

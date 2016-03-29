@@ -19,10 +19,12 @@ public class ParametersDTO {
 	private int minimumPopulationSize;
 	private int disposalAmount;
 	private int incrementAmount;
+	private int totalGeneration;
+	private int recombinationRate;
 	
 	public ParametersDTO(Integer initialPopulationSize, Integer firstCutPointPosition, Integer secondCutPointPosition,
 			boolean randomCutPoint, CutPointType cutPointType, double knapsackWeight, double knapsackVolume, int maximumPopulationSize,
-			int minimumPopulationSize, int disposalAmount, int incrementAmount) {
+			int minimumPopulationSize, int disposalAmount, int incrementAmount, int totalGeneration, int recombinationRate) {
 		this.initialPopulationSize = initialPopulationSize;
 		this.randomCutPoint = randomCutPoint;
 		this.cutPointType = cutPointType;
@@ -32,6 +34,8 @@ public class ParametersDTO {
 		this.minimumPopulationSize = minimumPopulationSize;
 		this.disposalAmount = disposalAmount;
 		this.incrementAmount = incrementAmount;
+		this.totalGeneration = totalGeneration;
+		this.recombinationRate = recombinationRate;
 		
 		if(!setCutPointPositions()) {
 			this.firstCutPointPosition = firstCutPointPosition;
@@ -55,8 +59,11 @@ public class ParametersDTO {
 				
 				firstCutPointPosition = random.nextInt(KnapsackModel.TOTAL_ITEM_QUANTITY);
 				
-				while(secondCutPointPosition.equals(firstCutPointPosition)) {
+				while(secondCutPointPosition.equals(firstCutPointPosition) 
+						|| secondCutPointPosition < firstCutPointPosition) {
+					
 					secondCutPointPosition = random.nextInt(KnapsackModel.TOTAL_ITEM_QUANTITY);
+					
 				}
 				
 				return true;
@@ -109,6 +116,14 @@ public class ParametersDTO {
 
 	public int getIncrementAmount() {
 		return incrementAmount;
+	}
+
+	public int getTotalGeneration() {
+		return totalGeneration;
+	}
+
+	public int getRecombinationRate() {
+		return recombinationRate;
 	}
 
 }

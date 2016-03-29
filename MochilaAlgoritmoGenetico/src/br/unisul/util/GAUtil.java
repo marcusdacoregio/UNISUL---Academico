@@ -1,5 +1,6 @@
 package br.unisul.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -51,6 +52,58 @@ public class GAUtil {
 		}
 
 		return sortedHashMap;
+	}
+	
+	/**
+	 * Returns a list of random positions from the list that come from parameter
+	 * 
+	 * @param list
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<Integer> generateRandomPositionsForTheList(List list, int recombinationRate) {
+		
+		List tempList = new ArrayList<>();
+		tempList.addAll(list);
+		
+		Collections.shuffle(tempList);
+		
+		double rate = ((double) recombinationRate) / 100;
+		double result = tempList.size() * rate;
+		
+		int parentsAmount = (int) result;
+		
+		List<Integer> arrayPositions = new ArrayList<Integer>();
+		
+		for(int i = 0; i < parentsAmount; i++){
+			
+			arrayPositions.add(tempList.indexOf(tempList.get(i)));
+			
+		}
+		
+		Collections.shuffle(arrayPositions);
+		
+		return arrayPositions;
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<Integer> generateRandomPositionsForTheList(int amount, List list) {
+		
+		List tempList = new ArrayList<>();
+		tempList.addAll(list);
+		
+		Collections.shuffle(tempList);
+		
+		List<Integer> arrayPositions = new ArrayList<Integer>();
+		
+		for(int i = 0; i < amount; i++){
+			
+			arrayPositions.add(tempList.indexOf(tempList.get(i)));
+			
+		}
+		
+		Collections.shuffle(arrayPositions);
+		
+		return arrayPositions;
 	}
 
 }

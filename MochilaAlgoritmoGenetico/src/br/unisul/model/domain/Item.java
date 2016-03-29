@@ -3,11 +3,11 @@ package br.unisul.model.domain;
 public class Item {
 
 	private String name;
-	private Double volume;
-	private Double weight;
-	private Double value;
+	private double volume;
+	private double weight;
+	private double value;
 
-	public Item(String name, Double volume, Double weight, Double value) {
+	public Item(String name, double volume, double weight, double value) {
 		this.name = name;
 		this.volume = volume;
 		this.weight = weight;
@@ -18,15 +18,15 @@ public class Item {
 		return name;
 	}
 
-	public Double getVolume() {
+	public double getVolume() {
 		return volume;
 	}
 
-	public Double getWeight() {
+	public double getWeight() {
 		return weight;
 	}
 
-	public Double getValue() {
+	public double getValue() {
 		return value;
 	}
 
