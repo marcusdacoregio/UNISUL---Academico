@@ -16,21 +16,33 @@ import org.eclipse.swt.events.SelectionEvent;
 public class MainView {
 
 	protected Shell shlAlgoritmoGentico;
-	private Text txtPopulacaoInicial;
-	private Text txtPrimeiroPontoCorte;
-	private Text txtSegundoPontoDeCorte;
+	private Text txtInitialPopulation;
+	private Text txtfirstCutPoint;
+	private Text txtSecondCutPoint;
 	
 	private Label label_1;
 	private Label label_2;
 	
-	private Button radioPontoUnico;
-	private Button radioPontoDuplo;
+	private Button radioSingleCutPoint;
+	private Button radioDualCutPoint;
 	
-	private Button checkPontoAleatorio;
+	private Button checkRandomCutPoint;
 	private Label label_3;
-	private Label lblCapacidadeMochila;
-	private Text txtCapacidadeMochila;
+	private Label lblPesoMochila;
+	private Text txtMaxKnapsackWeight;
 	private Label label_4;
+	private Label lblVolumeMaximoMochila;
+	private Text txtMaxKnapsackVolume;
+	private Text txtMaxPopulationSize;
+	private Text txtDisposalAmount;
+	private Text txtMinPopulationSize;
+	private Text txtIncrementAmount;
+	private Label lblTaxaDeRecombinao;
+	private Text txtRecombinationRate;
+	private Label label_6;
+	private Label label_8;
+	private Label lblTotalDeGeraes;
+	private Text txtTotalGeneration;
 
 	/**
 	 * Launch the application.
@@ -69,9 +81,9 @@ public class MainView {
 	    lblPopulacaoInicial.setBounds(10, 10, 99, 15);
 	    lblPopulacaoInicial.setText("Popula\u00E7\u00E3o Inicial:");
 	    
-	    txtPopulacaoInicial = new Text(composite, SWT.BORDER);
-	    txtPopulacaoInicial.setText("100");
-	    txtPopulacaoInicial.setBounds(115, 4, 76, 21);
+	    txtInitialPopulation = new Text(composite, SWT.BORDER);
+	    txtInitialPopulation.setText("100");
+	    txtInitialPopulation.setBounds(115, 4, 76, 21);
 	    
 	    Label label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 	    label.setBounds(10, 31, 199, 2);
@@ -81,38 +93,38 @@ public class MainView {
 	    lblPontoDeCorte.setBounds(10, 39, 99, 15);
 	    lblPontoDeCorte.setText("Ponto de Corte:");
 	    
-	    radioPontoUnico = new Button(composite, SWT.RADIO);
-	    radioPontoUnico.addSelectionListener(new SelectionAdapter() {
+	    radioSingleCutPoint = new Button(composite, SWT.RADIO);
+	    radioSingleCutPoint.addSelectionListener(new SelectionAdapter() {
 	    	@Override
 	    	public void widgetSelected(SelectionEvent event) {
-	    		if(checkPontoAleatorio.getSelection() == false){
-	    			txtPrimeiroPontoCorte.setEnabled(true);
-	    			txtSegundoPontoDeCorte.setEnabled(false);
+	    		if(checkRandomCutPoint.getSelection() == false){
+	    			txtfirstCutPoint.setEnabled(true);
+	    			txtSecondCutPoint.setEnabled(false);
 	    		}
 	    	}
 	    });
-	    radioPontoUnico.setBounds(10, 60, 54, 16);
-	    radioPontoUnico.setText("\u00DAnico");
+	    radioSingleCutPoint.setBounds(10, 60, 54, 16);
+	    radioSingleCutPoint.setText("\u00DAnico");
 	    
-	    radioPontoDuplo = new Button(composite, SWT.RADIO);
-	    radioPontoDuplo.addSelectionListener(new SelectionAdapter() {
+	    radioDualCutPoint = new Button(composite, SWT.RADIO);
+	    radioDualCutPoint.addSelectionListener(new SelectionAdapter() {
 	    	@Override
 	    	public void widgetSelected(SelectionEvent event) {
-	    		if(checkPontoAleatorio.getSelection() == false){
-	    			txtPrimeiroPontoCorte.setEnabled(true);
-	    			txtSegundoPontoDeCorte.setEnabled(true);
+	    		if(checkRandomCutPoint.getSelection() == false){
+	    			txtfirstCutPoint.setEnabled(true);
+	    			txtSecondCutPoint.setEnabled(true);
 	    		}
 	    	}
 	    });
-	    radioPontoDuplo.setSelection(true);
-	    radioPontoDuplo.setBounds(70, 60, 54, 16);
-	    radioPontoDuplo.setText("Duplo");
+	    radioDualCutPoint.setSelection(true);
+	    radioDualCutPoint.setBounds(70, 60, 54, 16);
+	    radioDualCutPoint.setText("Duplo");
 	    
-	    txtPrimeiroPontoCorte = new Text(composite, SWT.BORDER);
-	    txtPrimeiroPontoCorte.setBounds(27, 82, 37, 21);
+	    txtfirstCutPoint = new Text(composite, SWT.BORDER);
+	    txtfirstCutPoint.setBounds(27, 82, 37, 21);
 	    
-	    txtSegundoPontoDeCorte = new Text(composite, SWT.BORDER);
-	    txtSegundoPontoDeCorte.setBounds(87, 82, 37, 21);
+	    txtSecondCutPoint = new Text(composite, SWT.BORDER);
+	    txtSecondCutPoint.setBounds(87, 82, 37, 21);
 	    
 	    label_1 = new Label(composite, SWT.NONE);
 	    label_1.setBounds(10, 85, 11, 15);
@@ -122,35 +134,113 @@ public class MainView {
 	    label_2.setText("2\u00BA");
 	    label_2.setBounds(70, 85, 11, 15);
 	    
-	    checkPontoAleatorio = new Button(composite, SWT.CHECK);
-	    checkPontoAleatorio.addSelectionListener(new SelectionAdapter() {
+	    checkRandomCutPoint = new Button(composite, SWT.CHECK);
+	    checkRandomCutPoint.addSelectionListener(new SelectionAdapter() {
 	    	@Override
 	    	public void widgetSelected(SelectionEvent event) {
-	    		if(checkPontoAleatorio.getSelection() == false) {
-	    			txtPrimeiroPontoCorte.setEnabled(true);
-	    			txtSegundoPontoDeCorte.setEnabled(radioPontoUnico.getSelection() == true ? false : true);
+	    		if(checkRandomCutPoint.getSelection() == false) {
+	    			txtfirstCutPoint.setEnabled(true);
+	    			txtSecondCutPoint.setEnabled(radioSingleCutPoint.getSelection() == true ? false : true);
 	    		} else {
-	    			txtPrimeiroPontoCorte.setEnabled(false);
-	    			txtSegundoPontoDeCorte.setEnabled(false);
+	    			txtfirstCutPoint.setEnabled(false);
+	    			txtSecondCutPoint.setEnabled(false);
 	    		}
 	    	}
 	    });
-	    checkPontoAleatorio.setBounds(10, 109, 93, 16);
-	    checkPontoAleatorio.setText("Aleat\u00F3rio");
+	    checkRandomCutPoint.setBounds(10, 109, 93, 16);
+	    checkRandomCutPoint.setText("Aleat\u00F3rio");
 	    
 	    label_3 = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 	    label_3.setBounds(10, 131, 199, 2);
 	    
-	    lblCapacidadeMochila = new Label(composite, SWT.NONE);
-	    lblCapacidadeMochila.setText("Capacidade da Mochila:");
-	    lblCapacidadeMochila.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-	    lblCapacidadeMochila.setBounds(10, 139, 133, 15);
+	    lblPesoMochila = new Label(composite, SWT.NONE);
+	    lblPesoMochila.setText("Peso M\u00E1ximo da Mochila:");
+	    lblPesoMochila.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+	    lblPesoMochila.setBounds(10, 139, 144, 15);
 	    
-	    txtCapacidadeMochila = new Text(composite, SWT.BORDER);
-	    txtCapacidadeMochila.setBounds(144, 136, 65, 21);
+	    txtMaxKnapsackWeight = new Text(composite, SWT.BORDER);
+	    txtMaxKnapsackWeight.setText("80");
+	    txtMaxKnapsackWeight.setBounds(154, 136, 65, 21);
 	    
 	    label_4 = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
-	    label_4.setBounds(10, 160, 199, 2);
+	    label_4.setBounds(10, 189, 199, 2);
+	    
+	    lblVolumeMaximoMochila = new Label(composite, SWT.NONE);
+	    lblVolumeMaximoMochila.setText("Volume M\u00E1ximo da Mochila:");
+	    lblVolumeMaximoMochila.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+	    lblVolumeMaximoMochila.setBounds(10, 168, 155, 15);
+	    
+	    txtMaxKnapsackVolume = new Text(composite, SWT.BORDER);
+	    txtMaxKnapsackVolume.setText("80");
+	    txtMaxKnapsackVolume.setBounds(174, 163, 65, 21);
+	    
+	    Label lblQuandoPopulaoChegar = new Label(composite, SWT.NONE);
+	    lblQuandoPopulaoChegar.setBounds(9, 197, 177, 15);
+	    lblQuandoPopulaoChegar.setText("Quando popula\u00E7\u00E3o for maior que");
+	    
+	    Label lblRemover = new Label(composite, SWT.NONE);
+	    lblRemover.setBounds(235, 197, 44, 15);
+	    lblRemover.setText("remover");
+	    
+	    Label lblIndivduos = new Label(composite, SWT.NONE);
+	    lblIndivduos.setBounds(325, 197, 55, 15);
+	    lblIndivduos.setText("indiv\u00EDduos");
+	    
+	    txtMaxPopulationSize = new Text(composite, SWT.BORDER);
+	    txtMaxPopulationSize.setText("600");
+	    txtMaxPopulationSize.setBounds(192, 197, 37, 21);
+	    
+	    txtDisposalAmount = new Text(composite, SWT.BORDER);
+	    txtDisposalAmount.setText("50");
+	    txtDisposalAmount.setBounds(282, 197, 37, 21);
+	    
+	    Label lblQuandoPopulaoFor = new Label(composite, SWT.NONE);
+	    lblQuandoPopulaoFor.setText("Quando popula\u00E7\u00E3o for menor que");
+	    lblQuandoPopulaoFor.setBounds(9, 227, 182, 15);
+	    
+	    txtMinPopulationSize = new Text(composite, SWT.BORDER);
+	    txtMinPopulationSize.setText("50");
+	    txtMinPopulationSize.setBounds(192, 224, 37, 21);
+	    
+	    Label lblAdicionar = new Label(composite, SWT.NONE);
+	    lblAdicionar.setText("adicionar");
+	    lblAdicionar.setBounds(235, 224, 54, 15);
+	    
+	    txtIncrementAmount = new Text(composite, SWT.BORDER);
+	    txtIncrementAmount.setText("50");
+	    txtIncrementAmount.setBounds(292, 224, 37, 21);
+	    
+	    Label label_7 = new Label(composite, SWT.NONE);
+	    label_7.setText("indiv\u00EDduos");
+	    label_7.setBounds(336, 227, 55, 15);
+	    
+	    Label label_5 = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+	    label_5.setBounds(10, 251, 199, 2);
+	    
+	    lblTaxaDeRecombinao = new Label(composite, SWT.NONE);
+	    lblTaxaDeRecombinao.setText("Taxa de Recombina\u00E7\u00E3o:");
+	    lblTaxaDeRecombinao.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+	    lblTaxaDeRecombinao.setBounds(10, 259, 129, 15);
+	    
+	    txtRecombinationRate = new Text(composite, SWT.BORDER);
+	    txtRecombinationRate.setText("90");
+	    txtRecombinationRate.setBounds(145, 256, 54, 21);
+	    
+	    label_6 = new Label(composite, SWT.NONE);
+	    label_6.setBounds(205, 259, 16, 15);
+	    label_6.setText("%");
+	    
+	    label_8 = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+	    label_8.setBounds(10, 283, 199, 2);
+	    
+	    lblTotalDeGeraes = new Label(composite, SWT.NONE);
+	    lblTotalDeGeraes.setText("Total de Gera\u00E7\u00F5es:");
+	    lblTotalDeGeraes.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+	    lblTotalDeGeraes.setBounds(10, 291, 110, 15);
+	    
+	    txtTotalGeneration = new Text(composite, SWT.BORDER);
+	    txtTotalGeneration.setText("100");
+	    txtTotalGeneration.setBounds(115, 288, 54, 21);
 		
 		shlAlgoritmoGentico.open();
 		shlAlgoritmoGentico.layout();
