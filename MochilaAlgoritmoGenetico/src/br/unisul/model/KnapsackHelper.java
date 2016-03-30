@@ -1,10 +1,9 @@
 package br.unisul.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import br.unisul.model.domain.Item;
-import br.unisul.model.domain.Knapsack;
 import br.unisul.util.FileUtil;
 
 public class KnapsackHelper {
@@ -13,16 +12,26 @@ public class KnapsackHelper {
 	public static final int INDEX_VOLUME = 1;
 	public static final int INDEX_VALUE = 2;
 	
+	public int getTotalItens(String pathCSVitens) {
+		
+		String csvContent = FileUtil.readCSVfile(pathCSVitens);
+		
+		String[] eachLineFromCSV = csvContent.split(FileUtil.FILE_SEPARATOR);
+		
+		//Return eachLineFromCSV - 2 to ignore the header and footer
+		return eachLineFromCSV.length - 2;
+	}
+	
 	public Map<Integer, Item> recoverItensData(String pathCSVitens) {
 		
-		Map<Integer, Item> mapItens = new HashMap<Integer, Item>();
+		Map<Integer, Item> mapItens = new LinkedHashMap<Integer, Item>();
 		
 		String csvContent = FileUtil.readCSVfile(pathCSVitens);
 		
 		String[] eachLineFromCSV = csvContent.split(FileUtil.FILE_SEPARATOR);
 		
 		//Starts from 1 to avoid header
-		//Stop on lenght-1 to avoid the footer
+		//Stop on length-1 to avoid the footer
 		for(int i = 1; i < eachLineFromCSV.length-1; i++) {
 			
 			String[] eachDataFromLine = eachLineFromCSV[i].split(";");
@@ -61,5 +70,5 @@ public class KnapsackHelper {
 		
 		return returnData;
 	}
-
+	
 }

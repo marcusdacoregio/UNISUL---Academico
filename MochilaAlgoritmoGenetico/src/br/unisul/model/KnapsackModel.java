@@ -10,43 +10,57 @@ import br.unisul.model.domain.Item;
 import br.unisul.model.domain.Knapsack;
 import br.unisul.model.domain.Population;
 import br.unisul.model.dto.ParametersDTO;
-import br.unisul.model.enums.CutPointType;
 import br.unisul.util.GAUtil;
 
 public class KnapsackModel {
 	
-	public static final int TOTAL_ITEM_QUANTITY = 25;
-	private static final String PATH_CSV_ITENS = "docs/tabela_artigos.csv";
+	private static final String PATH_CSV_ITENS = "tabela_artigos.csv";
 	private static final int ONE = 1;
 	private static final int ZERO = 0;
 	
+	private int totalItemQuantity;
 	private Map<Integer, Item> mapItens;
 	private Population population;
 	private ParametersDTO parameters;
-	private Double maxKnapsackWeight;
-	private Double maxKnapsackVolume;
 	private Double maxKnapsackValue;
+	
+	private Knapsack bestKnapsack;
 	
 	private static Random random = new Random();
 	
 	public KnapsackModel(ParametersDTO parameters) {
 		this.parameters = parameters;
+		bestKnapsack = new Knapsack();
 		
 		KnapsackHelper helper = new KnapsackHelper();
-		mapItens = helper.recoverItensData(PATH_CSV_ITENS);
 		
-		setTotalCapacity(helper.recoverTotalKnapsackCapacity(PATH_CSV_ITENS));
+		String path = parameters.getCsvPath() != null && 
+				!parameters.getCsvPath().isEmpty() ? parameters.getCsvPath() : PATH_CSV_ITENS;
 		
+		mapItens = helper.recoverItensData(path);
+		
+		setTotalCapacity(helper.recoverTotalKnapsackCapacity(path));
+		
+		totalItemQuantity = helper.getTotalItens(path);
+
+		setCutPointPositions();
 	}
 	
 	public void process() {
-		
 		initializePopulation();
+
+		for (int i = 0; i < parameters.getTotalGeneration(); i++) {
+			
+			applyEvaluationFunction();
+			
+			population = doRecombination();
+			
+			removeOrAdjustDeadKnapsacks();
+			
+			resizePopulation();
+		}
+
 		applyEvaluationFunction();
-		population = doRecombination();
-		removeOrAdjustDeadKnapsacks();
-		resizePopulation();
-		
 	}
 	
 	private void removeOrAdjustDeadKnapsacks() {
@@ -57,7 +71,7 @@ public class KnapsackModel {
 			
 			if(knapsack.getLifeExpectancy() != null) {
 			
-				if(knapsack.getLifeExpectancy() == ZERO) {
+				if(knapsack.getLifeExpectancy() <= ZERO) {
 					disposalList.add(knapsack);
 				} else {
 					knapsack.setLifeExpectancy(knapsack.getLifeExpectancy() - ONE);
@@ -73,14 +87,16 @@ public class KnapsackModel {
 	private void resizePopulation() {
 		
 		if(population.getPopulationSize() > parameters.getMaximumPopulationSize()) {
+			int removeAmount = (population.getPopulationSize() - parameters.getMaximumPopulationSize()) + parameters.getDisposalAmount();
 			
-			removeRandomKnapsackFromPopulation(parameters.getDisposalAmount());
+			removeRandomKnapsackFromPopulation(removeAmount);
 			
 		}
 		
 		if(population.getPopulationSize() < parameters.getMinimumPopulationSize()) {
 			
-			addRandomKnapsackToPopulation(parameters.getIncrementAmount());
+			int incrementAmount = (parameters.getMinimumPopulationSize() - population.getPopulationSize()) + parameters.getIncrementAmount();
+			addRandomKnapsackToPopulation(incrementAmount);
 			
 		}
 		
@@ -104,9 +120,9 @@ public class KnapsackModel {
 	private int[] generateRandomArray() {
 		
 		//Get the amount of 1 in the array
-		int amountOf1 = random.nextInt(TOTAL_ITEM_QUANTITY);
+		int amountOf1 = random.nextInt(totalItemQuantity);
 		
-		int[] array = new int[TOTAL_ITEM_QUANTITY];
+		int[] array = new int[totalItemQuantity];
 		
 		//Fill the array with the amount of 1 sequentially
 		for (int j = 0; j < amountOf1; j++) {
@@ -119,19 +135,16 @@ public class KnapsackModel {
 	}
 	
 	private void applyEvaluationFunction() {
-		
 		for (Knapsack knapsack : population.getPopulation()) {
 			
 			//Check if this knapsack have not a life expectancy
 			//The life expectancy will be calculated only one time per knapsack
 			if(knapsack.getLifeExpectancy() == null) {
 				calculateKnapsackData(knapsack);
+				setLifeExpectancy(knapsack);
 			}
 			
-			setLifeExpectancy(knapsack);
-			
 		}
-		
 	}
 
 	private Population doRecombination() {
@@ -145,7 +158,7 @@ public class KnapsackModel {
 		//Iterate over the array
 		for(int i = 0; i < knapsack.itemArray.length; i++) {
 			//Check if the item is presents (1) on the array
-			if(knapsack.itemArray[i] == 1) {
+			if(knapsack.itemArray[i] == ONE) {
 				//Get his data
 				Item item = mapItens.get(i);
 				
@@ -158,6 +171,9 @@ public class KnapsackModel {
 			
 		}
 		
+		if(knapsack.getValue() > bestKnapsack.getValue() && isInBoundaries(knapsack)) {
+			this.bestKnapsack = knapsack;
+		}
 	}
 
 	private void setLifeExpectancy(Knapsack knapsack) {
@@ -170,18 +186,27 @@ public class KnapsackModel {
 		knapsack.setLifeExpectancy(lifeExpectancy);
 		
 		//Now gives a penalty to the knapsack if it surpass the limit of weight and volume
-		if(knapsack.getWeight() > maxKnapsackWeight) {
+		if(knapsack.getWeight() > parameters.getKnapsackWeight()) {
 			
-			//Penalty based on weight
+			int penalty = doPenaltyFormula(knapsack.getWeight(), knapsack.getValue());
+			knapsack.setLifeExpectancy(knapsack.getLifeExpectancy() - penalty);
+		}
+		
+		if(knapsack.getVolume() > parameters.getKnapsackVolume()) {
+			
+			int penalty = doPenaltyFormula(knapsack.getVolume(), knapsack.getValue());
+			knapsack.setLifeExpectancy(knapsack.getLifeExpectancy() - penalty);
 			
 		}
 		
-		if(knapsack.getVolume() > maxKnapsackVolume) {
-			
-			//Penalty based on volume
-			
-		}
+	}
+	
+	private int doPenaltyFormula(double volumeOrWeight, double value) {
 		
+		double math = ((volumeOrWeight - parameters.getKnapsackVolume()) / value) * parameters.getTotalGeneration();
+		int penalty = (int) math;
+		
+		return penalty;
 	}
 	
 	private void addRandomKnapsackToPopulation(int amount) {
@@ -208,35 +233,63 @@ public class KnapsackModel {
 	}
 	
 	private void setTotalCapacity(double[] data) {
-		
-		maxKnapsackWeight = data[KnapsackHelper.INDEX_WEIGHT];
-		maxKnapsackVolume = data[KnapsackHelper.INDEX_VOLUME];
 		maxKnapsackValue = data[KnapsackHelper.INDEX_VALUE];
+	}
+	
+	private boolean isInBoundaries(Knapsack knapsack) {
+		if(knapsack.getWeight() <= parameters.getKnapsackWeight()
+				&& knapsack.getVolume() <= parameters.getKnapsackVolume()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean setCutPointPositions() {
 		
+		if(parameters.isRandomCutPoint()) {
+			
+			Random random = new Random();
+			
+			switch (parameters.getCutPointType()) {
+			case SINGLE:
+				
+				parameters.setFirstCutPointPosition(random.nextInt(totalItemQuantity));
+				return true;
+
+			case DUAL:
+				
+				parameters.setFirstCutPointPosition(random.nextInt(totalItemQuantity));
+				
+				while(parameters.getSecondCutPointPosition() == parameters.getFirstCutPointPosition() 
+						|| parameters.getSecondCutPointPosition() < parameters.getFirstCutPointPosition()) {
+					
+					parameters.setSecondCutPointPosition(random.nextInt(totalItemQuantity));
+					
+				}
+				
+				return true;
+			}
+			
+		}
+		
+		return false;
 	}
 
-	public static void main(String[] args) {
-		
-		int initialPopulationSize = 100;;
-		Integer firstCutPointPosition = null;
-		Integer secondCutPointPosition = null;
-		boolean randomCutPoint = false;
-		CutPointType cutPointType = CutPointType.DUAL;
-		double knapsackWeight = 80.0;
-		double knapsackVolume = 80.0;
-		int maximumPopulationSize = 600;
-		int minimumPopulationSize = 40;
-		int disposalAmount = 50;
-		int incrementAmount = 20;
-		int totalGeneration = 100;
-		int recombinationRate = 80;
-		
-		ParametersDTO parameters = new ParametersDTO(initialPopulationSize, firstCutPointPosition, secondCutPointPosition, 
-				randomCutPoint, cutPointType, knapsackWeight, knapsackVolume, maximumPopulationSize, 
-				minimumPopulationSize, disposalAmount, incrementAmount, totalGeneration, recombinationRate);
-		
-		KnapsackModel model = new KnapsackModel(parameters);
-		model.process();
+	public Population getPopulation() {
+		return population;
+	}
+
+	public Knapsack getBestKnapsack() {
+		return bestKnapsack;
+	}
+
+	public Map<Integer, Item> getMapItens() {
+		return mapItens;
+	}
+
+	public Double getMaxKnapsackValue() {
+		return maxKnapsackValue;
 	}
 
 }

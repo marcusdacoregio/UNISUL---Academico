@@ -1,19 +1,17 @@
 package br.unisul.model.dto;
 
-import java.util.Random;
-
-import br.unisul.model.KnapsackModel;
 import br.unisul.model.enums.CutPointType;
 
 public class ParametersDTO {
 
-	private Integer initialPopulationSize;
-	private Integer firstCutPointPosition;
-	private Integer secondCutPointPosition;
+	private int initialPopulationSize;
+	private int firstCutPointPosition;
+	private int secondCutPointPosition;
 	private boolean randomCutPoint;
 	private CutPointType cutPointType;
 	private double knapsackWeight;
 	private double knapsackVolume;
+	private String csvPath;
 	
 	private int maximumPopulationSize;
 	private int minimumPopulationSize;
@@ -22,9 +20,10 @@ public class ParametersDTO {
 	private int totalGeneration;
 	private int recombinationRate;
 	
-	public ParametersDTO(Integer initialPopulationSize, Integer firstCutPointPosition, Integer secondCutPointPosition,
+	public ParametersDTO(int initialPopulationSize, int firstCutPointPosition, int secondCutPointPosition,
 			boolean randomCutPoint, CutPointType cutPointType, double knapsackWeight, double knapsackVolume, int maximumPopulationSize,
-			int minimumPopulationSize, int disposalAmount, int incrementAmount, int totalGeneration, int recombinationRate) {
+			int minimumPopulationSize, int disposalAmount, int incrementAmount, int totalGeneration, int recombinationRate, String csvPath) {
+		
 		this.initialPopulationSize = initialPopulationSize;
 		this.randomCutPoint = randomCutPoint;
 		this.cutPointType = cutPointType;
@@ -36,53 +35,20 @@ public class ParametersDTO {
 		this.incrementAmount = incrementAmount;
 		this.totalGeneration = totalGeneration;
 		this.recombinationRate = recombinationRate;
-		
-		if(!setCutPointPositions()) {
-			this.firstCutPointPosition = firstCutPointPosition;
-			this.secondCutPointPosition = secondCutPointPosition;
-		}
+		this.csvPath = csvPath;
+		this.firstCutPointPosition = firstCutPointPosition;
+		this.secondCutPointPosition = secondCutPointPosition;
 	}
 	
-	private boolean setCutPointPositions() {
-		
-		if(randomCutPoint) {
-			
-			Random random = new Random();
-			
-			switch (cutPointType) {
-			case SINGLE:
-				
-				firstCutPointPosition = random.nextInt(KnapsackModel.TOTAL_ITEM_QUANTITY);
-				return true;
-
-			case DUAL:
-				
-				firstCutPointPosition = random.nextInt(KnapsackModel.TOTAL_ITEM_QUANTITY);
-				
-				while(secondCutPointPosition.equals(firstCutPointPosition) 
-						|| secondCutPointPosition < firstCutPointPosition) {
-					
-					secondCutPointPosition = random.nextInt(KnapsackModel.TOTAL_ITEM_QUANTITY);
-					
-				}
-				
-				return true;
-			}
-			
-		}
-		
-		return false;
-	}
-
-	public Integer getInitialPopulationSize() {
+	public int getInitialPopulationSize() {
 		return initialPopulationSize;
 	}
 
-	public Integer getFirstCutPointPosition() {
+	public int getFirstCutPointPosition() {
 		return firstCutPointPosition;
 	}
 
-	public Integer getSecondCutPointPosition() {
+	public int getSecondCutPointPosition() {
 		return secondCutPointPosition;
 	}
 
@@ -124,6 +90,18 @@ public class ParametersDTO {
 
 	public int getRecombinationRate() {
 		return recombinationRate;
+	}
+
+	public String getCsvPath() {
+		return csvPath;
+	}
+
+	public void setFirstCutPointPosition(int firstCutPointPosition) {
+		this.firstCutPointPosition = firstCutPointPosition;
+	}
+
+	public void setSecondCutPointPosition(int secondCutPointPosition) {
+		this.secondCutPointPosition = secondCutPointPosition;
 	}
 
 }
