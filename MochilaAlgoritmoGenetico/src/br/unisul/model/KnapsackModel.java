@@ -52,12 +52,13 @@ public class KnapsackModel {
 		for (int i = 0; i < parameters.getTotalGeneration(); i++) {
 			
 			applyEvaluationFunction();
-			
+
 			population = doRecombination();
-			
+
 			removeOrAdjustDeadKnapsacks();
-			
+
 			resizePopulation();
+
 		}
 
 		applyEvaluationFunction();
@@ -259,14 +260,16 @@ public class KnapsackModel {
 
 			case DUAL:
 				
-				parameters.setFirstCutPointPosition(random.nextInt(totalItemQuantity));
+				int value1 = random.nextInt(totalItemQuantity);
 				
-				while(parameters.getSecondCutPointPosition() == parameters.getFirstCutPointPosition() 
-						|| parameters.getSecondCutPointPosition() < parameters.getFirstCutPointPosition()) {
-					
-					parameters.setSecondCutPointPosition(random.nextInt(totalItemQuantity));
-					
+				int value2 = random.nextInt(totalItemQuantity);
+				
+				while(value2 == value1) {
+					value2 = random.nextInt(totalItemQuantity);
 				}
+				
+				parameters.setFirstCutPointPosition(value1 < value2 ? value1 : value2);
+				parameters.setSecondCutPointPosition(value1 > value2 ? value1 : value2);
 				
 				return true;
 			}

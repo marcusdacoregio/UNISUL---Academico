@@ -46,18 +46,35 @@ public class RecombinationHelper {
 		
 		switch (parameters.getCutPointType()) {
 		case SINGLE:
+			Knapsack kid = doSingleCutPointCrossOver(father, mother); 
+			applyMutation(kid);
 			
-			return doSingleCutPointCrossOver(father, mother);
+			return kid;
 			
 		case DUAL:
+			Knapsack kid2 = doDualCutPointCrossOver(father, mother); 
+			applyMutation(kid2);
 			
-			return doDualCutPointCrossOver(father, mother);
+			return kid2;
 
 		}
 		
 		return null;
 	}
 	
+	private void applyMutation(Knapsack kid) {
+		double mutationRate = parameters.getMutationRate() / 100;
+		
+		if(Math.random() <= mutationRate) {
+			
+			int randomPosition = new Random().nextInt(kid.itemArray.length);
+			
+			kid.itemArray[randomPosition] = kid.itemArray[randomPosition] == 1 ? 0 : 1;
+			
+			kid.setMutant(true);
+		}
+	}
+
 	private Knapsack doDualCutPointCrossOver(Knapsack father, Knapsack mother) {
 		
 		int firstCutPoint = parameters.getFirstCutPointPosition();

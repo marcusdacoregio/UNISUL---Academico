@@ -19,10 +19,12 @@ public class ParametersDTO {
 	private int incrementAmount;
 	private int totalGeneration;
 	private int recombinationRate;
+	private int mutationRate;
 	
 	public ParametersDTO(int initialPopulationSize, int firstCutPointPosition, int secondCutPointPosition,
 			boolean randomCutPoint, CutPointType cutPointType, double knapsackWeight, double knapsackVolume, int maximumPopulationSize,
-			int minimumPopulationSize, int disposalAmount, int incrementAmount, int totalGeneration, int recombinationRate, String csvPath) {
+			int minimumPopulationSize, int disposalAmount, int incrementAmount, int totalGeneration, int recombinationRate,
+			String csvPath, int mutationRate) {
 		
 		this.initialPopulationSize = initialPopulationSize;
 		this.randomCutPoint = randomCutPoint;
@@ -38,6 +40,7 @@ public class ParametersDTO {
 		this.csvPath = csvPath;
 		this.firstCutPointPosition = firstCutPointPosition;
 		this.secondCutPointPosition = secondCutPointPosition;
+		this.mutationRate = mutationRate;
 	}
 	
 	public int getInitialPopulationSize() {
@@ -102,6 +105,10 @@ public class ParametersDTO {
 
 	public void setSecondCutPointPosition(int secondCutPointPosition) {
 		this.secondCutPointPosition = secondCutPointPosition;
+	}
+
+	public int getMutationRate() {
+		return mutationRate;
 	}
 
 }

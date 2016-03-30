@@ -77,6 +77,9 @@ public class MainView {
 	private FileDialog fileDialog;
 	private String csvPath;
 	private Button btnFileUpload;
+	private Label label_9;
+	private Text txtMutationRate;
+	private Label lblMutant;
 	
 	/**
 	 * Launch the application.
@@ -273,11 +276,11 @@ public class MainView {
 	    lblTotalDeGeraes = new Label(composite, SWT.NONE);
 	    lblTotalDeGeraes.setText("Total de Gera\u00E7\u00F5es:");
 	    lblTotalDeGeraes.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
-	    lblTotalDeGeraes.setBounds(10, 291, 102, 15);
+	    lblTotalDeGeraes.setBounds(10, 318, 102, 15);
 	    
 	    txtTotalGeneration = new Text(composite, SWT.BORDER);
 	    txtTotalGeneration.setText("100");
-	    txtTotalGeneration.setBounds(115, 288, 54, 21);
+	    txtTotalGeneration.setBounds(115, 315, 54, 21);
 	    
 	    btnProcessar = new Button(composite, SWT.NONE);
 	    btnProcessar.addSelectionListener(new SelectionAdapter() {
@@ -289,7 +292,7 @@ public class MainView {
 		    		boolean randomCutPoint = checkRandomCutPoint.getSelection() ? true : false;
 		    		int initialPopulationSize = Integer.parseInt(txtInitialPopulation.getText());
 		    		int firstCutPointPosition = randomCutPoint ? 0 : Integer.parseInt(txtFirstCutPoint.getText());
-		    		int secondCutPointPosition = randomCutPoint ? 0:  Integer.parseInt(txtSecondCutPoint.getText());
+		    		int secondCutPointPosition = randomCutPoint ? 0 :  Integer.parseInt(txtSecondCutPoint.getText());
 		    		CutPointType cutPointType = radioSingleCutPoint.getSelection() ? CutPointType.SINGLE : CutPointType.DUAL;
 		    		double knapsackWeight = Double.parseDouble(txtMaxKnapsackWeight.getText());
 		    		double knapsackVolume = Double.parseDouble(txtMaxKnapsackVolume.getText());
@@ -299,10 +302,12 @@ public class MainView {
 		    		int incrementAmount = Integer.parseInt(txtIncrementAmount.getText());
 		    		int totalGeneration = Integer.parseInt(txtTotalGeneration.getText());
 		    		int recombinationRate = Integer.parseInt(txtRecombinationRate.getText());
+		    		int mutationRate = Integer.parseInt(txtMutationRate.getText());
 	    		
 		    		parameters = new ParametersDTO(initialPopulationSize, firstCutPointPosition, secondCutPointPosition, 
 		    				randomCutPoint, cutPointType, knapsackWeight, knapsackVolume, maximumPopulationSize, 
-		    				minimumPopulationSize, disposalAmount, incrementAmount, totalGeneration, recombinationRate, csvPath);
+		    				minimumPopulationSize, disposalAmount, incrementAmount, totalGeneration, recombinationRate, csvPath,
+		    				mutationRate);
 
 		    		
 		    		lblProcessando.setText("Processando...");
@@ -322,6 +327,7 @@ public class MainView {
 		    		txtBestValue.setText(knapsack.getValue() + " / " + controller.getMaxKnapsackValue());
 		    		txtBestVolume.setText(knapsack.getVolume() + " / " + txtMaxKnapsackVolume.getText());
 		    		txtBestWeight.setText(knapsack.getWeight() + " / " + txtMaxKnapsackWeight.getText());
+		    		lblMutant.setVisible(knapsack.isMutant());
 	    		} catch (Exception e) {
 	    			lblNewLabel.setText("Alguma coisa deu errado, revise os parâmetros");
 	    			e.printStackTrace();
@@ -331,7 +337,7 @@ public class MainView {
 	    	}
 
 	    });
-	    btnProcessar.setBounds(10, 325, 199, 25);
+	    btnProcessar.setBounds(10, 366, 199, 25);
 	    btnProcessar.setText("Processar");
 	    
 	    tableItem = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION);
@@ -424,6 +430,29 @@ public class MainView {
 	    lblUploadInformation.setEditable(false);
 	    lblUploadInformation.setEnabled(false);
 	    lblUploadInformation.setBounds(215, 322, 182, 69);
+	    
+	    label_9 = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+	    label_9.setBounds(10, 310, 199, 2);
+	    
+	    Label lblTaxaDeMutao = new Label(composite, SWT.NONE);
+	    lblTaxaDeMutao.setFont(SWTResourceManager.getFont("Segoe UI", 9, SWT.BOLD));
+	    lblTaxaDeMutao.setBounds(9, 291, 102, 15);
+	    lblTaxaDeMutao.setText("Taxa de Muta\u00E7\u00E3o:");
+	    
+	    txtMutationRate = new Text(composite, SWT.BORDER);
+	    txtMutationRate.setText("0");
+	    txtMutationRate.setBounds(115, 288, 54, 21);
+	    
+	    Label label_10 = new Label(composite, SWT.NONE);
+	    label_10.setText("%");
+	    label_10.setBounds(175, 291, 16, 15);
+	    
+	    lblMutant = new Label(composite, SWT.NONE);
+	    lblMutant.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_MAGENTA));
+	    lblMutant.setFont(SWTResourceManager.getFont("Segoe UI", 12, SWT.NORMAL));
+	    lblMutant.setBounds(270, 34, 76, 23);
+	    lblMutant.setText("MUTANTE");
+	    lblMutant.setVisible(false);
 		
 		shlAlgoritmoGentico.open();
 		shlAlgoritmoGentico.layout();

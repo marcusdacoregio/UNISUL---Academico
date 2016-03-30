@@ -15,13 +15,13 @@ public class FileUtil {
 		BufferedReader br = null;
 		
 		StringBuilder arquivo = new StringBuilder();
-		
+		InputStream in = null;
 		try {
 			
 			try {
 				br = new BufferedReader(new FileReader(path));
 			} catch (IOException e) {
-				InputStream in = FileUtil.class.getClassLoader().getResourceAsStream(path);
+				in = FileUtil.class.getClassLoader().getResourceAsStream(path);
 				br = new BufferedReader(new InputStreamReader(in));
 			}
 			
@@ -35,6 +35,7 @@ public class FileUtil {
 		} finally {
 			try {
 				if (br != null)br.close();
+				if (in != null)in.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
