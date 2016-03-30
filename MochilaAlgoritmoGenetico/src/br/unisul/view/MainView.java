@@ -155,9 +155,11 @@ public class MainView {
 	    radioDualCutPoint.setText("Duplo");
 	    
 	    txtFirstCutPoint = new Text(composite, SWT.BORDER);
+	    txtFirstCutPoint.setEnabled(false);
 	    txtFirstCutPoint.setBounds(27, 82, 37, 21);
 	    
 	    txtSecondCutPoint = new Text(composite, SWT.BORDER);
+	    txtSecondCutPoint.setEnabled(false);
 	    txtSecondCutPoint.setBounds(87, 82, 37, 21);
 	    
 	    label_1 = new Label(composite, SWT.NONE);
@@ -302,13 +304,14 @@ public class MainView {
 		    				randomCutPoint, cutPointType, knapsackWeight, knapsackVolume, maximumPopulationSize, 
 		    				minimumPopulationSize, disposalAmount, incrementAmount, totalGeneration, recombinationRate, csvPath);
 
-		    		txtFirstCutPoint.setText(String.valueOf(parameters.getFirstCutPointPosition()));
-		    		txtSecondCutPoint.setText(String.valueOf(parameters.getSecondCutPointPosition()));
 		    		
 		    		lblProcessando.setText("Processando...");
 		    		
-		    		controller = new KnapsackController(parameters);
+	    			controller = new KnapsackController(parameters);
 		    		controller.process();
+		    		
+		    		txtFirstCutPoint.setText(String.valueOf(controller.getFirstCutPointPosition()));
+		    		txtSecondCutPoint.setText(String.valueOf(controller.getSecondCutPointPosition()));
 		    		
 		    		Knapsack knapsack = controller.getBestKnapsack();
 		    		

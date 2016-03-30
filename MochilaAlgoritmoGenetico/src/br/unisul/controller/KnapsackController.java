@@ -35,5 +35,12 @@ public class KnapsackController {
 	public double getMaxKnapsackValue() {
 		return model.getMaxKnapsackValue();
 	}
-
+	
+	public int getFirstCutPointPosition() {
+		return model.getFirstCutPointPosition();
+	}
+	
+	public int getSecondCutPointPosition() {
+		return model.getSecondCutPointPosition();
+	}
 }

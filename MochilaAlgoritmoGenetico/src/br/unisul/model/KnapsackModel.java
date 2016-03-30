@@ -292,4 +292,11 @@ public class KnapsackModel {
 		return maxKnapsackValue;
 	}
 
+	public int getFirstCutPointPosition() {
+		return parameters.getFirstCutPointPosition();
+	}
+	
+	public int getSecondCutPointPosition() {
+		return parameters.getSecondCutPointPosition();
+	}
 }
