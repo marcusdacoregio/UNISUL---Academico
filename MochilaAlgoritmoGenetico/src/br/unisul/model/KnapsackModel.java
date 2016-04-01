@@ -240,12 +240,9 @@ public class KnapsackModel {
 	}
 	
 	private boolean isInBoundaries(Knapsack knapsack) {
-		if(knapsack.getWeight() <= parameters.getKnapsackWeight()
-				&& knapsack.getVolume() <= parameters.getKnapsackVolume()) {
-			return true;
-		} else {
-			return false;
-		}
+		return knapsack.getWeight() <= parameters.getKnapsackWeight()
+				&& knapsack.getVolume() <= parameters.getKnapsackVolume();
+			
 	}
 	
 	private boolean setCutPointPositions() {
