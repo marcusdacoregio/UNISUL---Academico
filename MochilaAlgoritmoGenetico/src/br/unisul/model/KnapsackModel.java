@@ -50,7 +50,6 @@ public class KnapsackModel {
 		initializePopulation();
 
 		for (int i = 0; i < parameters.getTotalGeneration(); i++) {
-			
 			applyEvaluationFunction();
 
 			population = doRecombination();
@@ -58,14 +57,12 @@ public class KnapsackModel {
 			removeOrAdjustDeadKnapsacks();
 
 			resizePopulation();
-
 		}
 
 		applyEvaluationFunction();
 	}
 	
 	private void removeOrAdjustDeadKnapsacks() {
-		
 		List<Knapsack> disposalList = new ArrayList<Knapsack>();
 		
 		for (Knapsack knapsack : population.getPopulation()) {
@@ -86,25 +83,20 @@ public class KnapsackModel {
 	}
 
 	private void resizePopulation() {
-		
 		if(population.getPopulationSize() > parameters.getMaximumPopulationSize()) {
 			int removeAmount = (population.getPopulationSize() - parameters.getMaximumPopulationSize()) + parameters.getDisposalAmount();
 			
 			removeRandomKnapsackFromPopulation(removeAmount);
-			
 		}
 		
 		if(population.getPopulationSize() < parameters.getMinimumPopulationSize()) {
-			
 			int incrementAmount = (parameters.getMinimumPopulationSize() - population.getPopulationSize()) + parameters.getIncrementAmount();
 			addRandomKnapsackToPopulation(incrementAmount);
 			
 		}
-		
 	}
 
 	private void initializePopulation() {
-		
 		List<Knapsack> knapsackList = new ArrayList<>();
 
 		for (int i = 0; i < parameters.getInitialPopulationSize(); i++) {
@@ -119,7 +111,6 @@ public class KnapsackModel {
 	}
 	
 	private int[] generateRandomArray() {
-		
 		//Get the amount of 1 in the array
 		int amountOf1 = random.nextInt(totalItemQuantity);
 		
@@ -137,7 +128,6 @@ public class KnapsackModel {
 	
 	private void applyEvaluationFunction() {
 		for (Knapsack knapsack : population.getPopulation()) {
-			
 			//Check if this knapsack have not a life expectancy
 			//The life expectancy will be calculated only one time per knapsack
 			if(knapsack.getLifeExpectancy() == null) {
@@ -149,9 +139,7 @@ public class KnapsackModel {
 	}
 
 	private Population doRecombination() {
-		
 		RecombinationHelper helper = new RecombinationHelper(population, parameters);
-		
 		return helper.recombine();
 	}
 
@@ -178,7 +166,6 @@ public class KnapsackModel {
 	}
 
 	private void setLifeExpectancy(Knapsack knapsack) {
-		
 		//((Valor da Mochila / valor total possível) * numero gerações
 		double calc = (knapsack.getValue() / maxKnapsackValue) * parameters.getTotalGeneration();
 		
@@ -188,22 +175,17 @@ public class KnapsackModel {
 		
 		//Now gives a penalty to the knapsack if it surpass the limit of weight and volume
 		if(knapsack.getWeight() > parameters.getKnapsackWeight()) {
-			
 			int penalty = doPenaltyFormula(knapsack.getWeight(), knapsack.getValue(), false);
 			knapsack.setLifeExpectancy(knapsack.getLifeExpectancy() - penalty);
 		}
 		
 		if(knapsack.getVolume() > parameters.getKnapsackVolume()) {
-			
 			int penalty = doPenaltyFormula(knapsack.getVolume(), knapsack.getValue(), true);
 			knapsack.setLifeExpectancy(knapsack.getLifeExpectancy() - penalty);
-			
 		}
-		
 	}
 	
 	private int doPenaltyFormula(double volumeOrWeight, double value, boolean volume) {
-		
 		double subtract = volume ? parameters.getKnapsackVolume() : parameters.getKnapsackWeight();
 		
 		double math = ((volumeOrWeight - subtract) / value) * parameters.getTotalGeneration();
@@ -213,26 +195,18 @@ public class KnapsackModel {
 	}
 	
 	private void addRandomKnapsackToPopulation(int amount) {
-		
 		for(int i = 0; i < amount; i++) {
-			
 			Knapsack knapsack = new Knapsack(generateRandomArray());
 			population.getPopulation().add(knapsack);
-			
 		}
-		
 	}
 	
 	private void removeRandomKnapsackFromPopulation(int amount) {
-		
 		Collections.shuffle(population.getPopulation());
 		
 		for(int i = 0; i < amount; i++) {
-			
 			population.getPopulation().remove(0);
-			
 		}
-		
 	}
 	
 	private void setTotalCapacity(double[] data) {
@@ -246,7 +220,6 @@ public class KnapsackModel {
 	}
 	
 	private boolean setCutPointPositions() {
-		
 		if(parameters.isRandomCutPoint()) {
 			
 			Random random = new Random();
