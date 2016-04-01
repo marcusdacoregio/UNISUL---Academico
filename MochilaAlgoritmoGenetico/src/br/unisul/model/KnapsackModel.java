@@ -189,22 +189,24 @@ public class KnapsackModel {
 		//Now gives a penalty to the knapsack if it surpass the limit of weight and volume
 		if(knapsack.getWeight() > parameters.getKnapsackWeight()) {
 			
-			int penalty = doPenaltyFormula(knapsack.getWeight(), knapsack.getValue());
+			int penalty = doPenaltyFormula(knapsack.getWeight(), knapsack.getValue(), false);
 			knapsack.setLifeExpectancy(knapsack.getLifeExpectancy() - penalty);
 		}
 		
 		if(knapsack.getVolume() > parameters.getKnapsackVolume()) {
 			
-			int penalty = doPenaltyFormula(knapsack.getVolume(), knapsack.getValue());
+			int penalty = doPenaltyFormula(knapsack.getVolume(), knapsack.getValue(), true);
 			knapsack.setLifeExpectancy(knapsack.getLifeExpectancy() - penalty);
 			
 		}
 		
 	}
 	
-	private int doPenaltyFormula(double volumeOrWeight, double value) {
+	private int doPenaltyFormula(double volumeOrWeight, double value, boolean volume) {
 		
-		double math = ((volumeOrWeight - parameters.getKnapsackVolume()) / value) * parameters.getTotalGeneration();
+		double subtract = volume ? parameters.getKnapsackVolume() : parameters.getKnapsackWeight();
+		
+		double math = ((volumeOrWeight - subtract) / value) * parameters.getTotalGeneration();
 		int penalty = (int) math;
 		
 		return penalty;
